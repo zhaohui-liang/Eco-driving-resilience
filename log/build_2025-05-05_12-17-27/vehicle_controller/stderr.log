@@ -1,0 +1,6 @@
+[31mCMake Error at CMakeLists.txt:20 (target_link_libraries):
+  Cannot specify link libraries for target "vehicle_controller_node" which is
+  not built by this project.
+
+[0m
+gmake: *** [Makefile:321: cmake_check_build_system] Error 1

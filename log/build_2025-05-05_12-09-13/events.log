@@ -1,0 +1,181 @@
+[0.000000] (-) TimerEvent: {}
+[0.000519] (vehicle_controller) JobQueued: {'identifier': 'vehicle_controller', 'dependencies': OrderedDict()}
+[0.000853] (vehicle_sender) JobQueued: {'identifier': 'vehicle_sender', 'dependencies': OrderedDict()}
+[0.001217] (vehicle_controller) JobStarted: {'identifier': 'vehicle_controller'}
+[0.016585] (vehicle_sender) JobStarted: {'identifier': 'vehicle_sender'}
+[0.033455] (vehicle_controller) JobProgress: {'identifier': 'vehicle_controller', 'progress': 'cmake'}
+[0.063758] (vehicle_controller) Command: {'cmd': ['/usr/bin/cmake', '/mnt/c/Users/17863/Downloads/catkin_ws_resilience/vehicle_controller', '-DCMAKE_INSTALL_PREFIX=/mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller'], 'cwd': '/mnt/c/Users/17863/Downloads/catkin_ws_resilience/build/vehicle_controller', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('USER', 'cats'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('WT_PROFILE_ID', '{61c54bbd-c2c6-5271-96e7-009a87ff44bf}'), ('HOME', '/home/cats'), ('OLDPWD', '/mnt/c/Users/17863/Downloads/catkin_ws_resilience/vehicle_sender'), ('ROS_PYTHON_VERSION', '3'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('WSL_DISTRO_NAME', 'Ubuntu-22.04'), ('WAYLAND_DISPLAY', 'wayland-0'), ('ROS_DISTRO', 'humble'), ('LOGNAME', 'cats'), ('NAME', 'CATSWK-RES-001'), ('WSL_INTEROP', '/run/WSL/6002_interop'), ('PULSE_SERVER', 'unix:/mnt/wslg/PulseServer'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('TERM', 'xterm-256color'), ('ROS_LOCALHOST_ONLY', '0'), ('PATH', '/home/cats/.local/bin:/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Program Files (x86)/VMware/VMware Player/bin/:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/d/Program Files/MATLAB/R2023b/bin:/mnt/c/Program Files/CMake/bin:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Program Files/dotnet/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR:/mnt/c/Users/17863/AppData/Local/Programs/Python/Python312/Scripts/:/mnt/c/Users/17863/AppData/Local/Programs/Python/Python312/:/mnt/c/Users/17863/AppData/Local/Programs/Python/Launcher/:/mnt/c/Users/17863/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/17863/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/17863/AppData/Local/Programs/MiKTeX/miktex/bin/x64/:/mnt/c/Users/17863/AppData/Local/Google/Cloud SDK/google-cloud-sdk/bin:/snap/bin'), ('WT_SESSION', '5580689a-5158-4d3c-a439-b402d50dc9b9'), ('XDG_RUNTIME_DIR', '/run/user/1000/'), ('DISPLAY', ':0'), ('LANG', 'C.UTF-8'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('AMENT_PREFIX_PATH', '/opt/ros/humble'), ('SHELL', '/bin/bash'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('PWD', '/mnt/c/Users/17863/Downloads/catkin_ws_resilience/build/vehicle_controller'), ('XDG_DATA_DIRS', '/usr/local/share:/usr/share:/var/lib/snapd/desktop'), ('PYTHONPATH', '/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('WSL2_GUI_APPS_ENABLED', '1'), ('HOSTTYPE', 'x86_64'), ('WSLENV', 'WT_SESSION:WT_PROFILE_ID:'), ('CMAKE_PREFIX_PATH', '/opt/ros/humble')]), 'shell': False}
+[0.078458] (vehicle_sender) JobProgress: {'identifier': 'vehicle_sender', 'progress': 'cmake'}
+[0.091948] (vehicle_sender) JobProgress: {'identifier': 'vehicle_sender', 'progress': 'build'}
+[0.096780] (vehicle_sender) Command: {'cmd': ['/usr/bin/cmake', '--build', '/mnt/c/Users/17863/Downloads/catkin_ws_resilience/build/vehicle_sender', '--', '-j64', '-l64'], 'cwd': '/mnt/c/Users/17863/Downloads/catkin_ws_resilience/build/vehicle_sender', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('USER', 'cats'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('WT_PROFILE_ID', '{61c54bbd-c2c6-5271-96e7-009a87ff44bf}'), ('HOME', '/home/cats'), ('OLDPWD', '/mnt/c/Users/17863/Downloads/catkin_ws_resilience/vehicle_sender'), ('ROS_PYTHON_VERSION', '3'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('WSL_DISTRO_NAME', 'Ubuntu-22.04'), ('WAYLAND_DISPLAY', 'wayland-0'), ('ROS_DISTRO', 'humble'), ('LOGNAME', 'cats'), ('NAME', 'CATSWK-RES-001'), ('WSL_INTEROP', '/run/WSL/6002_interop'), ('PULSE_SERVER', 'unix:/mnt/wslg/PulseServer'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('TERM', 'xterm-256color'), ('ROS_LOCALHOST_ONLY', '0'), ('PATH', '/home/cats/.local/bin:/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Program Files (x86)/VMware/VMware Player/bin/:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/d/Program Files/MATLAB/R2023b/bin:/mnt/c/Program Files/CMake/bin:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Program Files/dotnet/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR:/mnt/c/Users/17863/AppData/Local/Programs/Python/Python312/Scripts/:/mnt/c/Users/17863/AppData/Local/Programs/Python/Python312/:/mnt/c/Users/17863/AppData/Local/Programs/Python/Launcher/:/mnt/c/Users/17863/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/17863/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/17863/AppData/Local/Programs/MiKTeX/miktex/bin/x64/:/mnt/c/Users/17863/AppData/Local/Google/Cloud SDK/google-cloud-sdk/bin:/snap/bin'), ('WT_SESSION', '5580689a-5158-4d3c-a439-b402d50dc9b9'), ('XDG_RUNTIME_DIR', '/run/user/1000/'), ('DISPLAY', ':0'), ('LANG', 'C.UTF-8'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('AMENT_PREFIX_PATH', '/opt/ros/humble'), ('SHELL', '/bin/bash'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('PWD', '/mnt/c/Users/17863/Downloads/catkin_ws_resilience/build/vehicle_sender'), ('XDG_DATA_DIRS', '/usr/local/share:/usr/share:/var/lib/snapd/desktop'), ('PYTHONPATH', '/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('WSL2_GUI_APPS_ENABLED', '1'), ('HOSTTYPE', 'x86_64'), ('WSLENV', 'WT_SESSION:WT_PROFILE_ID:'), ('CMAKE_PREFIX_PATH', '/opt/ros/humble')]), 'shell': False}
+[0.108915] (-) TimerEvent: {}
+[0.139345] (vehicle_controller) StdoutLine: {'line': b'-- Found ament_cmake: 1.3.11 (/opt/ros/humble/share/ament_cmake/cmake)\n'}
+[0.209073] (-) TimerEvent: {}
+[0.273383] (vehicle_sender) StdoutLine: {'line': b'[ 50%] \x1b[32mBuilding CXX object CMakeFiles/vehicle_sender_node.dir/src/vehicle_sender_node.cpp.o\x1b[0m\n'}
+[0.291679] (vehicle_controller) StdoutLine: {'line': b'-- Found rclcpp: 16.0.11 (/opt/ros/humble/share/rclcpp/cmake)\n'}
+[0.309221] (-) TimerEvent: {}
+[0.409860] (-) TimerEvent: {}
+[0.436019] (vehicle_controller) StdoutLine: {'line': b'-- Found rosidl_generator_c: 3.1.6 (/opt/ros/humble/share/rosidl_generator_c/cmake)\n'}
+[0.438150] (vehicle_controller) StdoutLine: {'line': b'-- Found rosidl_adapter: 3.1.6 (/opt/ros/humble/share/rosidl_adapter/cmake)\n'}
+[0.443200] (vehicle_controller) StdoutLine: {'line': b'-- Found rosidl_generator_cpp: 3.1.6 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)\n'}
+[0.453135] (vehicle_controller) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[0.465698] (vehicle_controller) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[0.494885] (vehicle_controller) StdoutLine: {'line': b'-- Found rmw_implementation_cmake: 6.1.2 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)\n'}
+[0.497927] (vehicle_controller) StdoutLine: {'line': b'-- Found rmw_fastrtps_cpp: 6.2.7 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)\n'}
+[0.510003] (-) TimerEvent: {}
+[0.610643] (-) TimerEvent: {}
+[0.711314] (-) TimerEvent: {}
+[0.812024] (-) TimerEvent: {}
+[0.912635] (-) TimerEvent: {}
+[1.013212] (-) TimerEvent: {}
+[1.113846] (-) TimerEvent: {}
+[1.214484] (-) TimerEvent: {}
+[1.315140] (-) TimerEvent: {}
+[1.415710] (-) TimerEvent: {}
+[1.516356] (-) TimerEvent: {}
+[1.616901] (-) TimerEvent: {}
+[1.717508] (-) TimerEvent: {}
+[1.818144] (-) TimerEvent: {}
+[1.918859] (-) TimerEvent: {}
+[2.019400] (-) TimerEvent: {}
+[2.120058] (-) TimerEvent: {}
+[2.220698] (-) TimerEvent: {}
+[2.321241] (-) TimerEvent: {}
+[2.421772] (-) TimerEvent: {}
+[2.522303] (-) TimerEvent: {}
+[2.622879] (-) TimerEvent: {}
+[2.723386] (-) TimerEvent: {}
+[2.824022] (-) TimerEvent: {}
+[2.924689] (-) TimerEvent: {}
+[3.025206] (-) TimerEvent: {}
+[3.125737] (-) TimerEvent: {}
+[3.226282] (-) TimerEvent: {}
+[3.326833] (-) TimerEvent: {}
+[3.427462] (-) TimerEvent: {}
+[3.527995] (-) TimerEvent: {}
+[3.628699] (-) TimerEvent: {}
+[3.729324] (-) TimerEvent: {}
+[3.829995] (-) TimerEvent: {}
+[3.930523] (-) TimerEvent: {}
+[4.031041] (-) TimerEvent: {}
+[4.131552] (-) TimerEvent: {}
+[4.232235] (-) TimerEvent: {}
+[4.332858] (-) TimerEvent: {}
+[4.433545] (-) TimerEvent: {}
+[4.534119] (-) TimerEvent: {}
+[4.634691] (-) TimerEvent: {}
+[4.735362] (-) TimerEvent: {}
+[4.835952] (-) TimerEvent: {}
+[4.936590] (-) TimerEvent: {}
+[5.037271] (-) TimerEvent: {}
+[5.137833] (-) TimerEvent: {}
+[5.238442] (-) TimerEvent: {}
+[5.339125] (-) TimerEvent: {}
+[5.439828] (-) TimerEvent: {}
+[5.540497] (-) TimerEvent: {}
+[5.641082] (-) TimerEvent: {}
+[5.741667] (-) TimerEvent: {}
+[5.842354] (-) TimerEvent: {}
+[5.876939] (vehicle_controller) StdoutLine: {'line': b"-- Using RMW implementation 'rmw_fastrtps_cpp' as default\n"}
+[5.918269] (vehicle_controller) StdoutLine: {'line': b'-- Found geometry_msgs: 4.2.4 (/opt/ros/humble/share/geometry_msgs/cmake)\n'}
+[5.930892] (vehicle_controller) StdoutLine: {'line': b'-- Found novatel_oem7_msgs: 20.6.0 (/opt/ros/humble/share/novatel_oem7_msgs/cmake)\n'}
+[5.942530] (-) TimerEvent: {}
+[5.955825] (vehicle_controller) StdoutLine: {'line': b'-- Found ament_lint_auto: 0.12.11 (/opt/ros/humble/share/ament_lint_auto/cmake)\n'}
+[6.042674] (-) TimerEvent: {}
+[6.143389] (-) TimerEvent: {}
+[6.243986] (-) TimerEvent: {}
+[6.344563] (-) TimerEvent: {}
+[6.445167] (-) TimerEvent: {}
+[6.545740] (-) TimerEvent: {}
+[6.646444] (-) TimerEvent: {}
+[6.669548] (vehicle_controller) StdoutLine: {'line': b"-- Added test 'cppcheck' to perform static code analysis on C / C++ code\n"}
+[6.670591] (vehicle_controller) StdoutLine: {'line': b'-- Configured cppcheck include dirs: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/vehicle_controller/include\n'}
+[6.671524] (vehicle_controller) StdoutLine: {'line': b'-- Configured cppcheck exclude dirs and/or files: \n'}
+[6.721514] (vehicle_controller) StdoutLine: {'line': b"-- Added test 'flake8' to check Python code syntax and style conventions\n"}
+[6.746605] (-) TimerEvent: {}
+[6.834534] (vehicle_controller) StdoutLine: {'line': b"-- Added test 'lint_cmake' to check CMake code style\n"}
+[6.846761] (-) TimerEvent: {}
+[6.885893] (vehicle_controller) StdoutLine: {'line': b"-- Added test 'pep257' to check Python code against some of the docstring style conventions in PEP 257\n"}
+[6.946906] (-) TimerEvent: {}
+[7.047609] (-) TimerEvent: {}
+[7.148262] (-) TimerEvent: {}
+[7.248869] (-) TimerEvent: {}
+[7.265338] (vehicle_controller) StdoutLine: {'line': b"-- Added test 'uncrustify' to check C / C++ code style\n"}
+[7.266391] (vehicle_controller) StdoutLine: {'line': b'-- Configured uncrustify additional arguments: \n'}
+[7.316768] (vehicle_controller) StdoutLine: {'line': b"-- Added test 'xmllint' to check XML markup files\n"}
+[7.348988] (-) TimerEvent: {}
+[7.434187] (vehicle_controller) StdoutLine: {'line': b'-- Configuring done\n'}
+[7.449127] (-) TimerEvent: {}
+[7.549718] (-) TimerEvent: {}
+[7.650396] (-) TimerEvent: {}
+[7.751076] (-) TimerEvent: {}
+[7.809334] (vehicle_controller) StdoutLine: {'line': b'-- Generating done\n'}
+[7.851186] (-) TimerEvent: {}
+[7.951793] (-) TimerEvent: {}
+[8.009358] (vehicle_controller) StdoutLine: {'line': b'-- Build files have been written to: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/build/vehicle_controller\n'}
+[8.017062] (vehicle_controller) CommandEnded: {'returncode': 0}
+[8.021381] (vehicle_controller) JobProgress: {'identifier': 'vehicle_controller', 'progress': 'build'}
+[8.025893] (vehicle_controller) Command: {'cmd': ['/usr/bin/cmake', '--build', '/mnt/c/Users/17863/Downloads/catkin_ws_resilience/build/vehicle_controller', '--', '-j64', '-l64'], 'cwd': '/mnt/c/Users/17863/Downloads/catkin_ws_resilience/build/vehicle_controller', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('USER', 'cats'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('WT_PROFILE_ID', '{61c54bbd-c2c6-5271-96e7-009a87ff44bf}'), ('HOME', '/home/cats'), ('OLDPWD', '/mnt/c/Users/17863/Downloads/catkin_ws_resilience/vehicle_sender'), ('ROS_PYTHON_VERSION', '3'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('WSL_DISTRO_NAME', 'Ubuntu-22.04'), ('WAYLAND_DISPLAY', 'wayland-0'), ('ROS_DISTRO', 'humble'), ('LOGNAME', 'cats'), ('NAME', 'CATSWK-RES-001'), ('WSL_INTEROP', '/run/WSL/6002_interop'), ('PULSE_SERVER', 'unix:/mnt/wslg/PulseServer'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('TERM', 'xterm-256color'), ('ROS_LOCALHOST_ONLY', '0'), ('PATH', '/home/cats/.local/bin:/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Program Files (x86)/VMware/VMware Player/bin/:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/d/Program Files/MATLAB/R2023b/bin:/mnt/c/Program Files/CMake/bin:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Program Files/dotnet/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/NVIDIA Corporation/NVIDIA app/NvDLISR:/mnt/c/Users/17863/AppData/Local/Programs/Python/Python312/Scripts/:/mnt/c/Users/17863/AppData/Local/Programs/Python/Python312/:/mnt/c/Users/17863/AppData/Local/Programs/Python/Launcher/:/mnt/c/Users/17863/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/17863/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Users/17863/AppData/Local/Programs/MiKTeX/miktex/bin/x64/:/mnt/c/Users/17863/AppData/Local/Google/Cloud SDK/google-cloud-sdk/bin:/snap/bin'), ('WT_SESSION', '5580689a-5158-4d3c-a439-b402d50dc9b9'), ('XDG_RUNTIME_DIR', '/run/user/1000/'), ('DISPLAY', ':0'), ('LANG', 'C.UTF-8'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('AMENT_PREFIX_PATH', '/opt/ros/humble'), ('SHELL', '/bin/bash'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('PWD', '/mnt/c/Users/17863/Downloads/catkin_ws_resilience/build/vehicle_controller'), ('XDG_DATA_DIRS', '/usr/local/share:/usr/share:/var/lib/snapd/desktop'), ('PYTHONPATH', '/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('WSL2_GUI_APPS_ENABLED', '1'), ('HOSTTYPE', 'x86_64'), ('WSLENV', 'WT_SESSION:WT_PROFILE_ID:'), ('CMAKE_PREFIX_PATH', '/opt/ros/humble')]), 'shell': False}
+[8.051925] (-) TimerEvent: {}
+[8.152550] (-) TimerEvent: {}
+[8.223694] (vehicle_controller) StdoutLine: {'line': b'[ 25%] \x1b[32mBuilding CXX object CMakeFiles/vehicle_controller_node.dir/src/vehicle_node.cpp.o\x1b[0m\n'}
+[8.227893] (vehicle_controller) StdoutLine: {'line': b'[ 50%] \x1b[32mBuilding CXX object CMakeFiles/vehicle_controller_node.dir/src/vehicle_controller.cpp.o\x1b[0m\n'}
+[8.233293] (vehicle_controller) StdoutLine: {'line': b'[ 75%] \x1b[32mBuilding CXX object CMakeFiles/vehicle_controller_node.dir/src/signal_io.cpp.o\x1b[0m\n'}
+[8.252563] (vehicle_controller) StderrLine: {'line': b'\x1b[01m\x1b[K/mnt/c/Users/17863/Downloads/catkin_ws_resilience/vehicle_controller/src/vehicle_controller.cpp:2:10:\x1b[m\x1b[K \x1b[01;31m\x1b[Kfatal error: \x1b[m\x1b[Kvehicle_controller.hpp: No such file or directory\n'}
+[8.254101] (-) TimerEvent: {}
+[8.254561] (vehicle_controller) StderrLine: {'line': b'    2 | #include \x1b[01;31m\x1b[K"vehicle_controller.hpp"\x1b[m\x1b[K\n'}
+[8.255758] (vehicle_controller) StderrLine: {'line': b'      |          \x1b[01;31m\x1b[K^~~~~~~~~~~~~~~~~~~~~~~~\x1b[m\x1b[K\n'}
+[8.256893] (vehicle_controller) StderrLine: {'line': b'compilation terminated.\n'}
+[8.258104] (vehicle_controller) StderrLine: {'line': b'gmake[2]: *** [CMakeFiles/vehicle_controller_node.dir/build.make:90: CMakeFiles/vehicle_controller_node.dir/src/vehicle_controller.cpp.o] Error 1\n'}
+[8.259240] (vehicle_controller) StderrLine: {'line': b'gmake[2]: *** Waiting for unfinished jobs....\n'}
+[8.262850] (vehicle_controller) StderrLine: {'line': b'\x1b[01m\x1b[K/mnt/c/Users/17863/Downloads/catkin_ws_resilience/vehicle_controller/src/signal_io.cpp:2:10:\x1b[m\x1b[K \x1b[01;31m\x1b[Kfatal error: \x1b[m\x1b[Ksignal_io.hpp: No such file or directory\n'}
+[8.263938] (vehicle_controller) StderrLine: {'line': b'    2 | #include \x1b[01;31m\x1b[K"signal_io.hpp"\x1b[m\x1b[K\n'}
+[8.265183] (vehicle_controller) StderrLine: {'line': b'      |          \x1b[01;31m\x1b[K^~~~~~~~~~~~~~~\x1b[m\x1b[K\n'}
+[8.266490] (vehicle_controller) StderrLine: {'line': b'compilation terminated.\n'}
+[8.267553] (vehicle_controller) StderrLine: {'line': b'gmake[2]: *** [CMakeFiles/vehicle_controller_node.dir/build.make:104: CMakeFiles/vehicle_controller_node.dir/src/signal_io.cpp.o] Error 1\n'}
+[8.354262] (-) TimerEvent: {}
+[8.454818] (-) TimerEvent: {}
+[8.555355] (-) TimerEvent: {}
+[8.655848] (-) TimerEvent: {}
+[8.756392] (-) TimerEvent: {}
+[8.814496] (vehicle_sender) StdoutLine: {'line': b'[100%] \x1b[32m\x1b[1mLinking CXX executable vehicle_sender_node\x1b[0m\n'}
+[8.856532] (-) TimerEvent: {}
+[8.957102] (-) TimerEvent: {}
+[9.057631] (-) TimerEvent: {}
+[9.158207] (-) TimerEvent: {}
+[9.258716] (-) TimerEvent: {}
+[9.264049] (vehicle_controller) StderrLine: {'line': b'\x1b[01m\x1b[K/mnt/c/Users/17863/Downloads/catkin_ws_resilience/vehicle_controller/src/vehicle_node.cpp:5:10:\x1b[m\x1b[K \x1b[01;31m\x1b[Kfatal error: \x1b[m\x1b[Kvehicle_controller.hpp: No such file or directory\n'}
+[9.265058] (vehicle_controller) StderrLine: {'line': b'    5 | #include \x1b[01;31m\x1b[K"vehicle_controller.hpp"\x1b[m\x1b[K\n'}
+[9.265947] (vehicle_controller) StderrLine: {'line': b'      |          \x1b[01;31m\x1b[K^~~~~~~~~~~~~~~~~~~~~~~~\x1b[m\x1b[K\n'}
+[9.266746] (vehicle_controller) StderrLine: {'line': b'compilation terminated.\n'}
+[9.267584] (vehicle_controller) StderrLine: {'line': b'gmake[2]: *** [CMakeFiles/vehicle_controller_node.dir/build.make:76: CMakeFiles/vehicle_controller_node.dir/src/vehicle_node.cpp.o] Error 1\n'}
+[9.269612] (vehicle_controller) StderrLine: {'line': b'gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/vehicle_controller_node.dir/all] Error 2\n'}
+[9.270645] (vehicle_controller) StderrLine: {'line': b'gmake: *** [Makefile:146: all] Error 2\n'}
+[9.272796] (vehicle_controller) CommandEnded: {'returncode': 2}
+[9.358816] (-) TimerEvent: {}
+[9.451997] (vehicle_controller) JobEnded: {'identifier': 'vehicle_controller', 'rc': 2}
+[9.460644] (-) TimerEvent: {}
+[9.561155] (-) TimerEvent: {}
+[9.661796] (-) TimerEvent: {}
+[9.762428] (-) TimerEvent: {}
+[9.863047] (-) TimerEvent: {}
+[9.963527] (-) TimerEvent: {}
+[10.064025] (-) TimerEvent: {}
+[10.164587] (-) TimerEvent: {}
+[10.265156] (-) TimerEvent: {}
+[10.365690] (-) TimerEvent: {}
+[10.466266] (-) TimerEvent: {}
+[10.566861] (-) TimerEvent: {}
+[10.667379] (-) TimerEvent: {}
+[10.767898] (-) TimerEvent: {}
+[10.868405] (-) TimerEvent: {}
+[10.968934] (-) TimerEvent: {}
+[11.069521] (-) TimerEvent: {}
+[11.170086] (-) TimerEvent: {}
+[11.270716] (-) TimerEvent: {}
+[11.371328] (-) TimerEvent: {}
+[11.471858] (-) TimerEvent: {}
+[11.546065] (vehicle_sender) StdoutLine: {'line': b'[100%] Built target vehicle_sender_node\n'}
+[11.571996] (-) TimerEvent: {}
+[11.573292] (vehicle_sender) JobEnded: {'identifier': 'vehicle_sender', 'rc': 'SIGINT'}
+[11.581119] (-) EventReactorShutdown: {}

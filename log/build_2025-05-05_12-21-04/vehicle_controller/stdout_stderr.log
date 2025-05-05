@@ -1,0 +1,29 @@
+[ 25%] [32mBuilding CXX object CMakeFiles/vehicle_controller_node.dir/src/vehicle_node.cpp.o[0m
+[ 50%] [32mBuilding CXX object CMakeFiles/vehicle_controller_node.dir/src/vehicle_controller.cpp.o[0m
+[ 75%] [32mBuilding CXX object CMakeFiles/vehicle_controller_node.dir/src/signal_io.cpp.o[0m
+[100%] [32m[1mLinking CXX executable vehicle_controller_node[0m
+[100%] Built target vehicle_controller_node
+-- Install configuration: ""
+-- Installing: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/lib/vehicle_controller/vehicle_controller_node
+-- Set runtime path of "/mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/lib/vehicle_controller/vehicle_controller_node" to ""
+-- Installing: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/include/
+-- Installing: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/include//vehicle_controller
+-- Installing: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/include//vehicle_controller/signal_io.hpp
+-- Installing: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/include//vehicle_controller/vehicle_controller.hpp
+-- Installing: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/share/vehicle_controller/launch
+-- Installing: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/share/vehicle_controller/launch/vehicle_stack.launch.py
+-- Installing: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/share/ament_index/resource_index/package_run_dependencies/vehicle_controller
+-- Installing: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/share/ament_index/resource_index/parent_prefix_path/vehicle_controller
+-- Installing: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/share/vehicle_controller/environment/ament_prefix_path.sh
+-- Installing: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/share/vehicle_controller/environment/ament_prefix_path.dsv
+-- Installing: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/share/vehicle_controller/environment/path.sh
+-- Installing: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/share/vehicle_controller/environment/path.dsv
+-- Installing: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/share/vehicle_controller/local_setup.bash
+-- Installing: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/share/vehicle_controller/local_setup.sh
+-- Installing: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/share/vehicle_controller/local_setup.zsh
+-- Installing: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/share/vehicle_controller/local_setup.dsv
+-- Installing: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/share/vehicle_controller/package.dsv
+-- Installing: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/share/ament_index/resource_index/packages/vehicle_controller
+-- Installing: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/share/vehicle_controller/cmake/vehicle_controllerConfig.cmake
+-- Installing: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/share/vehicle_controller/cmake/vehicle_controllerConfig-version.cmake
+-- Installing: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/share/vehicle_controller/package.xml

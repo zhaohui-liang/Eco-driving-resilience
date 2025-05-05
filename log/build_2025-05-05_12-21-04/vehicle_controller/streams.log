@@ -1,0 +1,33 @@
+[0.071s] Invoking command in '/mnt/c/Users/17863/Downloads/catkin_ws_resilience/build/vehicle_controller': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /mnt/c/Users/17863/Downloads/catkin_ws_resilience/build/vehicle_controller -- -j64 -l64
+[0.264s] [ 25%] [32mBuilding CXX object CMakeFiles/vehicle_controller_node.dir/src/vehicle_node.cpp.o[0m
+[0.268s] [ 50%] [32mBuilding CXX object CMakeFiles/vehicle_controller_node.dir/src/vehicle_controller.cpp.o[0m
+[0.273s] [ 75%] [32mBuilding CXX object CMakeFiles/vehicle_controller_node.dir/src/signal_io.cpp.o[0m
+[11.991s] [100%] [32m[1mLinking CXX executable vehicle_controller_node[0m
+[15.893s] [100%] Built target vehicle_controller_node
+[15.927s] Invoked command in '/mnt/c/Users/17863/Downloads/catkin_ws_resilience/build/vehicle_controller' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /mnt/c/Users/17863/Downloads/catkin_ws_resilience/build/vehicle_controller -- -j64 -l64
+[15.949s] Invoking command in '/mnt/c/Users/17863/Downloads/catkin_ws_resilience/build/vehicle_controller': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /mnt/c/Users/17863/Downloads/catkin_ws_resilience/build/vehicle_controller
+[15.958s] -- Install configuration: ""
+[15.975s] -- Installing: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/lib/vehicle_controller/vehicle_controller_node
+[16.371s] -- Set runtime path of "/mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/lib/vehicle_controller/vehicle_controller_node" to ""
+[16.381s] -- Installing: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/include/
+[16.400s] -- Installing: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/include//vehicle_controller
+[16.427s] -- Installing: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/include//vehicle_controller/signal_io.hpp
+[16.491s] -- Installing: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/include//vehicle_controller/vehicle_controller.hpp
+[16.552s] -- Installing: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/share/vehicle_controller/launch
+[16.581s] -- Installing: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/share/vehicle_controller/launch/vehicle_stack.launch.py
+[16.673s] -- Installing: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/share/ament_index/resource_index/package_run_dependencies/vehicle_controller
+[16.783s] -- Installing: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/share/ament_index/resource_index/parent_prefix_path/vehicle_controller
+[16.878s] -- Installing: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/share/vehicle_controller/environment/ament_prefix_path.sh
+[16.945s] -- Installing: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/share/vehicle_controller/environment/ament_prefix_path.dsv
+[17.009s] -- Installing: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/share/vehicle_controller/environment/path.sh
+[17.069s] -- Installing: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/share/vehicle_controller/environment/path.dsv
+[17.136s] -- Installing: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/share/vehicle_controller/local_setup.bash
+[17.198s] -- Installing: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/share/vehicle_controller/local_setup.sh
+[17.261s] -- Installing: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/share/vehicle_controller/local_setup.zsh
+[17.321s] -- Installing: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/share/vehicle_controller/local_setup.dsv
+[17.386s] -- Installing: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/share/vehicle_controller/package.dsv
+[17.476s] -- Installing: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/share/ament_index/resource_index/packages/vehicle_controller
+[17.572s] -- Installing: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/share/vehicle_controller/cmake/vehicle_controllerConfig.cmake
+[17.636s] -- Installing: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/share/vehicle_controller/cmake/vehicle_controllerConfig-version.cmake
+[17.705s] -- Installing: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller/share/vehicle_controller/package.xml
+[17.755s] Invoked command in '/mnt/c/Users/17863/Downloads/catkin_ws_resilience/build/vehicle_controller' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /mnt/c/Users/17863/Downloads/catkin_ws_resilience/build/vehicle_controller

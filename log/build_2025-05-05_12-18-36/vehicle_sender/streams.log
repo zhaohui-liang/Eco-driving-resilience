@@ -1,0 +1,22 @@
+[0.080s] Invoking command in '/mnt/c/Users/17863/Downloads/catkin_ws_resilience/build/vehicle_sender': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /mnt/c/Users/17863/Downloads/catkin_ws_resilience/build/vehicle_sender -- -j64 -l64
+[0.273s] [100%] Built target vehicle_sender_node
+[0.302s] Invoked command in '/mnt/c/Users/17863/Downloads/catkin_ws_resilience/build/vehicle_sender' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /mnt/c/Users/17863/Downloads/catkin_ws_resilience/build/vehicle_sender -- -j64 -l64
+[0.330s] Invoking command in '/mnt/c/Users/17863/Downloads/catkin_ws_resilience/build/vehicle_sender': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /mnt/c/Users/17863/Downloads/catkin_ws_resilience/build/vehicle_sender
+[0.339s] -- Install configuration: ""
+[0.380s] -- Up-to-date: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_sender/lib/vehicle_sender/vehicle_sender_node
+[0.452s] -- Up-to-date: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_sender/share/ament_index/resource_index/package_run_dependencies/vehicle_sender
+[0.487s] -- Up-to-date: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_sender/share/ament_index/resource_index/parent_prefix_path/vehicle_sender
+[0.504s] -- Up-to-date: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_sender/share/vehicle_sender/environment/ament_prefix_path.sh
+[0.526s] -- Up-to-date: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_sender/share/vehicle_sender/environment/ament_prefix_path.dsv
+[0.542s] -- Up-to-date: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_sender/share/vehicle_sender/environment/path.sh
+[0.565s] -- Up-to-date: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_sender/share/vehicle_sender/environment/path.dsv
+[0.588s] -- Up-to-date: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_sender/share/vehicle_sender/local_setup.bash
+[0.610s] -- Up-to-date: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_sender/share/vehicle_sender/local_setup.sh
+[0.629s] -- Up-to-date: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_sender/share/vehicle_sender/local_setup.zsh
+[0.650s] -- Up-to-date: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_sender/share/vehicle_sender/local_setup.dsv
+[0.671s] -- Installing: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_sender/share/vehicle_sender/package.dsv
+[0.747s] -- Up-to-date: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_sender/share/ament_index/resource_index/packages/vehicle_sender
+[0.771s] -- Up-to-date: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_sender/share/vehicle_sender/cmake/vehicle_senderConfig.cmake
+[0.788s] -- Up-to-date: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_sender/share/vehicle_sender/cmake/vehicle_senderConfig-version.cmake
+[0.809s] -- Up-to-date: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_sender/share/vehicle_sender/package.xml
+[0.821s] Invoked command in '/mnt/c/Users/17863/Downloads/catkin_ws_resilience/build/vehicle_sender' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /mnt/c/Users/17863/Downloads/catkin_ws_resilience/build/vehicle_sender

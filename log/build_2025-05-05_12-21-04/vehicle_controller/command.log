@@ -1,0 +1,4 @@
+Invoking command in '/mnt/c/Users/17863/Downloads/catkin_ws_resilience/build/vehicle_controller': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /mnt/c/Users/17863/Downloads/catkin_ws_resilience/build/vehicle_controller -- -j64 -l64
+Invoked command in '/mnt/c/Users/17863/Downloads/catkin_ws_resilience/build/vehicle_controller' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /mnt/c/Users/17863/Downloads/catkin_ws_resilience/build/vehicle_controller -- -j64 -l64
+Invoking command in '/mnt/c/Users/17863/Downloads/catkin_ws_resilience/build/vehicle_controller': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /mnt/c/Users/17863/Downloads/catkin_ws_resilience/build/vehicle_controller
+Invoked command in '/mnt/c/Users/17863/Downloads/catkin_ws_resilience/build/vehicle_controller' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /mnt/c/Users/17863/Downloads/catkin_ws_resilience/build/vehicle_controller

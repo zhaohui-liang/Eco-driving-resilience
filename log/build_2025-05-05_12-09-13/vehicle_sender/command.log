@@ -1,0 +1,1 @@
+Invoking command in '/mnt/c/Users/17863/Downloads/catkin_ws_resilience/build/vehicle_sender': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /mnt/c/Users/17863/Downloads/catkin_ws_resilience/build/vehicle_sender -- -j64 -l64

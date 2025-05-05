@@ -1,0 +1,48 @@
+[0.066s] Invoking command in '/mnt/c/Users/17863/Downloads/catkin_ws_resilience/build/vehicle_controller': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /mnt/c/Users/17863/Downloads/catkin_ws_resilience/build/vehicle_controller -- -j64 -l64
+[0.187s] -- Found ament_cmake: 1.3.11 (/opt/ros/humble/share/ament_cmake/cmake)
+[0.340s] -- Found rclcpp: 16.0.11 (/opt/ros/humble/share/rclcpp/cmake)
+[0.491s] -- Found rosidl_generator_c: 3.1.6 (/opt/ros/humble/share/rosidl_generator_c/cmake)
+[0.493s] -- Found rosidl_adapter: 3.1.6 (/opt/ros/humble/share/rosidl_adapter/cmake)
+[0.498s] -- Found rosidl_generator_cpp: 3.1.6 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)
+[0.509s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[0.522s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[0.553s] -- Found rmw_implementation_cmake: 6.1.2 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)
+[0.558s] -- Found rmw_fastrtps_cpp: 6.2.7 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)
+[5.669s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[5.709s] -- Found geometry_msgs: 4.2.4 (/opt/ros/humble/share/geometry_msgs/cmake)
+[5.719s] -- Found novatel_oem7_msgs: 20.6.0 (/opt/ros/humble/share/novatel_oem7_msgs/cmake)
+[5.735s] -- Found ament_lint_auto: 0.12.11 (/opt/ros/humble/share/ament_lint_auto/cmake)
+[6.335s] -- Added test 'cppcheck' to perform static code analysis on C / C++ code
+[6.336s] -- Configured cppcheck include dirs: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/vehicle_controller/include
+[6.337s] -- Configured cppcheck exclude dirs and/or files: 
+[6.383s] -- Added test 'flake8' to check Python code syntax and style conventions
+[6.474s] -- Added test 'lint_cmake' to check CMake code style
+[6.520s] -- Added test 'pep257' to check Python code against some of the docstring style conventions in PEP 257
+[6.877s] -- Added test 'uncrustify' to check C / C++ code style
+[6.878s] -- Configured uncrustify additional arguments: 
+[6.922s] -- Added test 'xmllint' to check XML markup files
+[6.984s] -- Configuring done
+[7.300s] -- Generating done
+[7.486s] -- Build files have been written to: /mnt/c/Users/17863/Downloads/catkin_ws_resilience/build/vehicle_controller
+[7.604s] [ 25%] [32mBuilding CXX object CMakeFiles/vehicle_controller_node.dir/src/vehicle_node.cpp.o[0m
+[7.607s] [ 50%] [32mBuilding CXX object CMakeFiles/vehicle_controller_node.dir/src/vehicle_controller.cpp.o[0m
+[7.611s] [ 75%] [32mBuilding CXX object CMakeFiles/vehicle_controller_node.dir/src/signal_io.cpp.o[0m
+[7.632s] [01m[K/mnt/c/Users/17863/Downloads/catkin_ws_resilience/vehicle_controller/src/vehicle_controller.cpp:2:10:[m[K [01;31m[Kfatal error: [m[Kvehicle_controller.hpp: No such file or directory
+[7.633s]     2 | #include [01;31m[K"vehicle_controller.hpp"[m[K
+[7.634s]       |          [01;31m[K^~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[7.635s] [01m[K/mnt/c/Users/17863/Downloads/catkin_ws_resilience/vehicle_controller/src/signal_io.cpp:2:10:[m[K [01;31m[Kfatal error: [m[Ksignal_io.hpp: No such file or directory
+[7.635s]     2 | #include [01;31m[K"signal_io.hpp"[m[K
+[7.636s]       |          [01;31m[K^~~~~~~~~~~~~~~[m[K
+[7.637s] compilation terminated.
+[7.638s] compilation terminated.
+[7.639s] gmake[2]: *** [CMakeFiles/vehicle_controller_node.dir/build.make:90: CMakeFiles/vehicle_controller_node.dir/src/vehicle_controller.cpp.o] Error 1
+[7.640s] gmake[2]: *** Waiting for unfinished jobs....
+[7.641s] gmake[2]: *** [CMakeFiles/vehicle_controller_node.dir/build.make:104: CMakeFiles/vehicle_controller_node.dir/src/signal_io.cpp.o] Error 1
+[8.555s] [01m[K/mnt/c/Users/17863/Downloads/catkin_ws_resilience/vehicle_controller/src/vehicle_node.cpp:5:10:[m[K [01;31m[Kfatal error: [m[Kvehicle_controller.hpp: No such file or directory
+[8.556s]     5 | #include [01;31m[K"vehicle_controller.hpp"[m[K
+[8.556s]       |          [01;31m[K^~~~~~~~~~~~~~~~~~~~~~~~[m[K
+[8.557s] compilation terminated.
+[8.559s] gmake[2]: *** [CMakeFiles/vehicle_controller_node.dir/build.make:76: CMakeFiles/vehicle_controller_node.dir/src/vehicle_node.cpp.o] Error 1
+[8.561s] gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/vehicle_controller_node.dir/all] Error 2
+[8.561s] gmake: *** [Makefile:146: all] Error 2
+[8.563s] Invoked command in '/mnt/c/Users/17863/Downloads/catkin_ws_resilience/build/vehicle_controller' returned '2': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /mnt/c/Users/17863/Downloads/catkin_ws_resilience/build/vehicle_controller -- -j64 -l64

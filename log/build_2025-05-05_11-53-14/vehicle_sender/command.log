@@ -1,0 +1,2 @@
+Invoking command in '/mnt/c/Users/17863/Downloads/catkin_ws_resilience/build/vehicle_sender': /usr/bin/cmake /mnt/c/Users/17863/Downloads/catkin_ws_resilience/vehicle_sender -DCMAKE_INSTALL_PREFIX=/mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_sender
+Invoked command in '/mnt/c/Users/17863/Downloads/catkin_ws_resilience/build/vehicle_sender' returned '1': /usr/bin/cmake /mnt/c/Users/17863/Downloads/catkin_ws_resilience/vehicle_sender -DCMAKE_INSTALL_PREFIX=/mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_sender
