@@ -634,6 +634,11 @@ CMakeFiles/vehicle_controller_node.dir/src/signal_io.cpp.o: \
  /opt/ros/humble/include/novatel_oem7_msgs/novatel_oem7_msgs/msg/detail/best_extended_solution_status__traits.hpp \
  /opt/ros/humble/include/novatel_oem7_msgs/novatel_oem7_msgs/msg/detail/bestgnsspos__type_support.hpp \
  /opt/ros/humble/include/novatel_oem7_msgs/novatel_oem7_msgs/msg/rosidl_generator_cpp__visibility_control.hpp \
+ /opt/ros/humble/include/novatel_oem7_msgs/novatel_oem7_msgs/msg/bestvel.hpp \
+ /opt/ros/humble/include/novatel_oem7_msgs/novatel_oem7_msgs/msg/detail/bestvel__struct.hpp \
+ /opt/ros/humble/include/novatel_oem7_msgs/novatel_oem7_msgs/msg/detail/bestvel__builder.hpp \
+ /opt/ros/humble/include/novatel_oem7_msgs/novatel_oem7_msgs/msg/detail/bestvel__traits.hpp \
+ /opt/ros/humble/include/novatel_oem7_msgs/novatel_oem7_msgs/msg/detail/bestvel__type_support.hpp \
  /opt/ros/humble/include/novatel_oem7_msgs/novatel_oem7_msgs/msg/inspvax.hpp \
  /opt/ros/humble/include/novatel_oem7_msgs/novatel_oem7_msgs/msg/detail/inspvax__struct.hpp \
  /opt/ros/humble/include/novatel_oem7_msgs/novatel_oem7_msgs/msg/detail/inertial_solution_status__struct.hpp \

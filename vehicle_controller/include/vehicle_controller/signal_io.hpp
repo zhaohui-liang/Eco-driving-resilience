@@ -7,6 +7,7 @@
 #include <rclcpp/rclcpp.hpp>
 #include "vehicle_controller.hpp"
 #include "novatel_oem7_msgs/msg/bestgnsspos.hpp"
+#include "novatel_oem7_msgs/msg/bestvel.hpp"
 #include "novatel_oem7_msgs/msg/inspvax.hpp"
 #include "geometry_msgs/msg/twist_stamped.hpp"
 

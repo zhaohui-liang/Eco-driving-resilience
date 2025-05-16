@@ -21,7 +21,7 @@ public:
     void updateYawRate(double yaw_rate);
     void setTrafficLightCondition(int state, int time_to_next);
     void generateTrajectory();
-    std::vector<TrajectoryPoint> getTrajectory() const;
+    const std::vector<TrajectoryPoint>& getTrajectory() const;
 
 private:
     void savePredictedTrajectoryToFile(const std::string& filename) const;

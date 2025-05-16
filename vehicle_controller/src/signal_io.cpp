@@ -140,7 +140,7 @@ void SignalIO::socketListener() {
         buffer[n] = '\0';
 
         int id, state;
-        double time_left;
+        int time_left;
         if (sscanf(buffer, "%d,%d,%d", &id, &state, &time_left) == 3) {
             controller_->setTrafficLightCondition(state, time_left);
             RCLCPP_INFO(node_->get_logger(), "Traffic light update: state=%d, time=%d", state, time_left);
@@ -155,13 +155,6 @@ void SignalIO::socketListener() {
 void SignalIO::publishControlLoop() {
     static size_t idx = 0;
     static auto& trajectory = controller_->getTrajectory();
-    static size_t last_size = trajectory.size();
-
-    if (controller_->getTrajectory().size() != last_size) {
-        trajectory = controller_->getTrajectory();
-        idx = 0;
-        last_size = trajectory.size();
-    }
 
     if (idx < trajectory.size()) {
         geometry_msgs::msg::TwistStamped cmd;

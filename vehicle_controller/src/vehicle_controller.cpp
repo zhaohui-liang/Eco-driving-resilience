@@ -14,7 +14,7 @@ VehicleController::VehicleController(rclcpp::Node* parent_node)
   traffic_light_position_(160.0),
   traffic_light_state_(0),
   time_to_next_phase_(0.0),
-  trajectory_count_(0),
+  trajectory_count_(0)
 {
     parent_node->declare_parameter("expected_speed", 10.0);
     parent_node->declare_parameter("red_duration", 35.0);
@@ -96,12 +96,12 @@ void VehicleController::generateTrajectory() {
     trajectory_.clear();
     double d = traffic_light_position_ - last_position_;
     double t_e = 0.0;
-    if (d > (pow(expected_speed, 2) - pow(last_speed_, 2)) / 1.0) {
-        t_e = (expected_speed - last_speed_) / 2.0 + (d - (pow(expected_speed, 2) - pow(last_speed_, 2)) / 1.0) / expected_speed;
+    if (d > (pow(expected_speed_, 2) - pow(last_speed_, 2)) / 1.0) {
+        t_e = (expected_speed_ - last_speed_) / 2.0 + (d - (pow(expected_speed_, 2) - pow(last_speed_, 2)) / 1.0) / expected_speed_;
     } else {
         t_e = sqrt(d + pow(last_speed_ / 2.0, 2)) - last_speed_ / 2.0;
     }
-    double t_c = 3.0 * d / (last_speed_ + expected_speed - sqrt(last_speed_ * expected_speed));
+    double t_c = 3.0 * d / (last_speed_ + expected_speed_ - sqrt(last_speed_ * expected_speed_));
 
     std::vector<TrajectoryPoint> temp_trajectory;
     std::vector<double> t_values;
@@ -111,13 +111,13 @@ void VehicleController::generateTrajectory() {
 
     if (time_to_next_phase_ <= t_e) {
         for (double t : t_values) {
-            double pos = expected_speed * t;
-            double spd = expected_speed;
+            double pos = expected_speed_ * t;
+            double spd = expected_speed_;
             temp_trajectory.push_back({pos, spd, last_yaw_rate_});
         }
     } else if (time_to_next_phase_ < t_c) {
-        double a = 2 * d / pow(time_to_next_phase_, 3) + (expected_speed + last_speed_) / pow(time_to_next_phase_, 2);
-        double b = 3 * d / pow(time_to_next_phase_, 2) - (2 * last_speed_ + expected_speed) / time_to_next_phase_;
+        double a = 2 * d / pow(time_to_next_phase_, 3) + (expected_speed_ + last_speed_) / pow(time_to_next_phase_, 2);
+        double b = 3 * d / pow(time_to_next_phase_, 2) - (2 * last_speed_ + expected_speed_) / time_to_next_phase_;
         double c = last_speed_;
         double x0 = last_position_;
 
@@ -128,8 +128,8 @@ void VehicleController::generateTrajectory() {
         }
     } else {
         double t_w = time_to_next_phase_ - t_c;
-        double a = 2 * d / pow(t_c, 3) + (expected_speed + last_speed_) / pow(t_c, 2);
-        double b = 3 * d / pow(t_c, 2) - (2 * last_speed_ + expected_speed) / t_c;
+        double a = 2 * d / pow(t_c, 3) + (expected_speed_ + last_speed_) / pow(t_c, 2);
+        double b = 3 * d / pow(t_c, 2) - (2 * last_speed_ + expected_speed_) / t_c;
         double c = last_speed_;
         double x0 = last_position_;
 
@@ -168,7 +168,7 @@ void VehicleController::generateTrajectory() {
     trajectory_count_++;
 }
 
-std::vector<TrajectoryPoint> VehicleController::getTrajectory() const {
+const std::vector<TrajectoryPoint>& VehicleController::getTrajectory() const {
     return trajectory_;
 }
 
