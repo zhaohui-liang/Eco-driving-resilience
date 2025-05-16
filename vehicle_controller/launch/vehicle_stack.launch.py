@@ -14,7 +14,13 @@ def generate_launch_description():
     controller_node = Node(
         package='vehicle_controller',
         executable='vehicle_controller_node',
-        name='vehicle_controller'
+        name='vehicle_controller',
+        parameters=[{
+        'expected_speed': 12.0,
+        'red_duration': 30.0,
+        'yellow_duration': 4.0,
+        'green_duration': 20.0,
+        }]
     )
 
     delayed_controller = TimerAction(

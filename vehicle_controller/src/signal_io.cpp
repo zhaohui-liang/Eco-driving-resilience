@@ -10,15 +10,20 @@ SignalIO::SignalIO(rclcpp::Node* node, std::shared_ptr<VehicleController> contro
 : node_(node), controller_(controller)
 {
     vel_sub_ = node_->create_subscription<novatel_oem7_msgs::msg::INSPVAX>(
-        "/novatel/oem7/inspvax", 10,
+        "/bynav/inspvax", 10,
         std::bind(&SignalIO::imuCallback, this, std::placeholders::_1));
 
     pos_sub_ = node_->create_subscription<novatel_oem7_msgs::msg::BESTGNSSPOS>(
-        "/novatel/oem7/bestgnsspos", 10,
+        "/bynav/bestgnsspos", 10,
         std::bind(&SignalIO::gpsCallback, this, std::placeholders::_1));
+    
+    speed_sub_ = node_->create_subscription<novatel_oem7_msgs::msg::BESTVEL>(
+    "/bynav/bestvel", 10,
+    std::bind(&SignalIO::speedCallback, this, std::placeholders::_1));
 
     cmd_pub_ = node_->create_publisher<geometry_msgs::msg::TwistStamped>(
         "/twist_cmd", 10);
+
 
     control_timer_ = node_->create_wall_timer(
         std::chrono::milliseconds(100),
@@ -93,6 +98,11 @@ void SignalIO::imuCallback(const novatel_oem7_msgs::msg::INSPVAX::SharedPtr msg)
     }
 }
 
+void SignalIO::speedCallback(const novatel_oem7_msgs::msg::BESTVEL::SharedPtr msg) {
+    double velocity = msg->hor_speed;
+    controller_->updateSpeed(velocity);
+}
+
 void SignalIO::startSocketThread() {
     socket_thread_ = std::thread(&SignalIO::socketListener, this);
 }
@@ -131,9 +141,9 @@ void SignalIO::socketListener() {
 
         int id, state;
         double time_left;
-        if (sscanf(buffer, "%d,%d,%lf", &id, &state, &time_left) == 3) {
+        if (sscanf(buffer, "%d,%d,%d", &id, &state, &time_left) == 3) {
             controller_->setTrafficLightCondition(state, time_left);
-            RCLCPP_INFO(node_->get_logger(), "Traffic light update: state=%d, time=%.1f", state, time_left);
+            RCLCPP_INFO(node_->get_logger(), "Traffic light update: state=%d, time=%d", state, time_left);
             //controller_->generateTrajectory();
         }
     }
@@ -144,7 +154,7 @@ void SignalIO::socketListener() {
 
 void SignalIO::publishControlLoop() {
     static size_t idx = 0;
-    static auto trajectory = controller_->getTrajectory();
+    static auto& trajectory = controller_->getTrajectory();
     static size_t last_size = trajectory.size();
 
     if (controller_->getTrajectory().size() != last_size) {

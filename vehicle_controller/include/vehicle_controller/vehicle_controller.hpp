@@ -19,7 +19,7 @@ public:
     void updatePosition(double position);
     void updateSpeed(double speed);
     void updateYawRate(double yaw_rate);
-    void setTrafficLightCondition(int state, double time_to_next);
+    void setTrafficLightCondition(int state, int time_to_next);
     void generateTrajectory();
     std::vector<TrajectoryPoint> getTrajectory() const;
 
@@ -32,9 +32,13 @@ private:
     double last_speed_;
     double last_yaw_rate_;
     double traffic_light_position_;
+    double expected_speed_;
     int traffic_light_state_;
     double time_to_next_phase_;
     int trajectory_count_;
+    double red_duration_;
+    double green_duration_;
+    double yellow_duration_;
     std::vector<TrajectoryPoint> trajectory_;
     std::vector<TrajectoryPoint> actual_trajectory_;
 };

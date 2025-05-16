@@ -18,6 +18,7 @@ public:
 private:
     void imuCallback(const novatel_oem7_msgs::msg::INSPVAX::SharedPtr msg);
     void gpsCallback(const novatel_oem7_msgs::msg::BESTGNSSPOS::SharedPtr msg);
+    void speedCallback(const novatel_oem7_msgs::msg::BESTVEL::SharedPtr msg);
     void startSocketThread();
     void socketListener();
     void publishControlLoop();
@@ -27,9 +28,10 @@ private:
     std::shared_ptr<VehicleController> controller_;
     std::thread socket_thread_;
 
-    rclcpp::Subscription<novatel_oem7_msgs::msg::INSPVAX>::SharedPtr vel_sub_;
+    rclcpp::Subscription<novatel_oem7_msgs::msg::INSPVAX>::SharedPtr vel_sub_;  //actually imu_sub
     rclcpp::Subscription<novatel_oem7_msgs::msg::BESTGNSSPOS>::SharedPtr pos_sub_;
     rclcpp::Publisher<geometry_msgs::msg::TwistStamped>::SharedPtr cmd_pub_;
+    rclcpp::Subscription<novatel_oem7_msgs::msg::BESTVEL>::SharedPtr speed_sub_;
     rclcpp::TimerBase::SharedPtr control_timer_;
     rclcpp::TimerBase::SharedPtr trajectory_timer_;
 

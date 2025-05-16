@@ -14,8 +14,18 @@ VehicleController::VehicleController(rclcpp::Node* parent_node)
   traffic_light_position_(160.0),
   traffic_light_state_(0),
   time_to_next_phase_(0.0),
-  trajectory_count_(0)
+  trajectory_count_(0),
 {
+    parent_node->declare_parameter("expected_speed", 10.0);
+    parent_node->declare_parameter("red_duration", 35.0);
+    parent_node->declare_parameter("yellow_duration", 3.0);
+    parent_node->declare_parameter("green_duration", 25.0);
+
+    expected_speed_ = parent_node->get_parameter("expected_speed").as_double();
+    red_duration_ = parent_node->get_parameter("red_duration").as_double();
+    yellow_duration_ = parent_node->get_parameter("yellow_duration").as_double();
+    green_duration_ = parent_node->get_parameter("green_duration").as_double();
+
     trajectory_.clear();
     actual_trajectory_.clear();
 }
@@ -34,30 +44,125 @@ void VehicleController::updateYawRate(double yaw_rate) {
     last_yaw_rate_ = yaw_rate;
 }
 
-void VehicleController::setTrafficLightCondition(int state, double time_to_next) {
+void VehicleController::setTrafficLightCondition(int state, int time_to_next) {
     traffic_light_state_ = state;
-    time_to_next_phase_ = time_to_next;
+
+    double t = time_to_next / 10.0; // Convert from tenths of seconds to seconds
+    double cycle = red_duration_ + yellow_duration_ + green_duration_;
+    
+    double d = traffic_light_position_ - last_position_;
+    // Calculate earliest arrival time t_e
+    double t_e = 0.0;
+    if (d > (pow(expected_speed_, 2) - pow(last_speed_, 2)) / 1.0) {
+        t_e = (expected_speed_ - last_speed_) / 2.0 + (d - (pow(expected_speed_, 2) - pow(last_speed_, 2)) / 1.0) / expected_speed_;
+    } else {
+        t_e = sqrt(d + pow(last_speed_ / 2.0, 2)) - last_speed_ / 2.0;
+    }
+
+    switch (state) {
+        case 3: // red
+            time_to_next_phase_ = t;
+            break;
+
+        case 6: // green
+            if (t > t_e) {
+                time_to_next_phase_ = t_e;  // vehicle can make it through
+            } else {
+                time_to_next_phase_ = t + red_duration_ + yellow_duration_;  // wait for next green
+            }
+            break;
+
+        case 8: // yellow
+            time_to_next_phase_ = t + red_duration_;  // yellow then red then green
+            break;
+
+        default:
+            RCLCPP_WARN(logger_, "Unknown traffic light state received: %d", state);
+            time_to_next_phase_ = t;
+            break;
+    }
+
+
+    // Clamp to within cycle
+    if (time_to_next_phase_ > cycle) {
+        time_to_next_phase_ = fmod(time_to_next_phase_, cycle);
+    }
+
+    RCLCPP_INFO(logger_, "State: %d | time_to_next_phase: %.2f s", state, time_to_next_phase_);
 }
+
 
 void VehicleController::generateTrajectory() {
     trajectory_.clear();
+    double d = traffic_light_position_ - last_position_;
+    double t_e = 0.0;
+    if (d > (pow(expected_speed, 2) - pow(last_speed_, 2)) / 1.0) {
+        t_e = (expected_speed - last_speed_) / 2.0 + (d - (pow(expected_speed, 2) - pow(last_speed_, 2)) / 1.0) / expected_speed;
+    } else {
+        t_e = sqrt(d + pow(last_speed_ / 2.0, 2)) - last_speed_ / 2.0;
+    }
+    double t_c = 3.0 * d / (last_speed_ + expected_speed - sqrt(last_speed_ * expected_speed));
 
-    double expected_speed = 10.0;
-    double distance = traffic_light_position_ - last_position_;
-    double t_estimate = distance / std::max(1.0, last_speed_);
-    double t_target = (t_estimate <= time_to_next_phase_) ? t_estimate : time_to_next_phase_ + 10.0;
-
-    double a = (expected_speed + last_speed_) / pow(t_target, 2) - 2 * (distance) / pow(t_target, 3);
-    double b = 3 * (distance) / pow(t_target, 2) - (2 * last_speed_ + expected_speed) / t_target;
-    double c = last_speed_;
-    double d = last_position_;
-
-    for (double t = 0.0; t <= t_target; t += 0.1) {
-        double pos = a * pow(t, 3) + b * pow(t, 2) + c * t + d;
-        double spd = 3 * a * pow(t, 2) + 2 * b * t + c;
-        trajectory_.push_back({pos, std::max(spd, 0.0), last_yaw_rate_});
+    std::vector<TrajectoryPoint> temp_trajectory;
+    std::vector<double> t_values;
+    for (double t = 0.0; t <= time_to_next_phase_; t += 0.1) {
+        t_values.push_back(t);
     }
 
+    if (time_to_next_phase_ <= t_e) {
+        for (double t : t_values) {
+            double pos = expected_speed * t;
+            double spd = expected_speed;
+            temp_trajectory.push_back({pos, spd, last_yaw_rate_});
+        }
+    } else if (time_to_next_phase_ < t_c) {
+        double a = 2 * d / pow(time_to_next_phase_, 3) + (expected_speed + last_speed_) / pow(time_to_next_phase_, 2);
+        double b = 3 * d / pow(time_to_next_phase_, 2) - (2 * last_speed_ + expected_speed) / time_to_next_phase_;
+        double c = last_speed_;
+        double x0 = last_position_;
+
+        for (double t : t_values) {
+            double pos = a * pow(t, 3) + b * pow(t, 2) + c * t + x0;
+            double spd = 3 * a * pow(t, 2) + 2 * b * t + c;
+            temp_trajectory.push_back({pos, spd, last_yaw_rate_});
+        }
+    } else {
+        double t_w = time_to_next_phase_ - t_c;
+        double a = 2 * d / pow(t_c, 3) + (expected_speed + last_speed_) / pow(t_c, 2);
+        double b = 3 * d / pow(t_c, 2) - (2 * last_speed_ + expected_speed) / t_c;
+        double c = last_speed_;
+        double x0 = last_position_;
+
+        double t_s = -b / (3 * a);
+        double x_s = a * pow(t_s, 3) + b * pow(t_s, 2) + c * t_s + x0;
+
+        size_t idx_t_s = 0;
+        size_t idx_t_sw = 0;
+        for (size_t i = 0; i < t_values.size(); ++i) {
+            if (t_values[i] > t_s && idx_t_s == 0) idx_t_s = i;
+            if (t_values[i] > t_s + t_w && idx_t_sw == 0) idx_t_sw = i;
+        }
+
+        for (size_t i = 0; i < idx_t_s; ++i) {
+            double t = t_values[i];
+            double pos = a * pow(t, 3) + b * pow(t, 2) + c * t + x0;
+            double spd = 3 * a * pow(t, 2) + 2 * b * t + c;
+            temp_trajectory.push_back({pos, spd, last_yaw_rate_});
+        }
+
+        for (size_t i = idx_t_s; i < idx_t_sw; ++i) {
+            temp_trajectory.push_back({x_s, 0.0, last_yaw_rate_});
+        }
+
+        for (size_t i = idx_t_sw; i < t_values.size(); ++i) {
+            double t = t_values[i] - t_w;
+            double pos = a * pow(t, 3) + b * pow(t, 2) + c * t + x0;
+            double spd = 3 * a * pow(t, 2) + 2 * b * t + c;
+            temp_trajectory.push_back({pos, spd, last_yaw_rate_});
+        }
+    }
+
+    trajectory_ = temp_trajectory;
     savePredictedTrajectoryToFile("predicted_trajectory.csv");
     RCLCPP_INFO(logger_, "Trajectory generated with %zu points.", trajectory_.size());
     trajectory_count_++;
