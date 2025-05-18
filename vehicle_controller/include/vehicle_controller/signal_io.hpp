@@ -38,6 +38,8 @@ private:
 
     std::mutex fusion_mutex_;
     bool gps_ref_set_ = false;
+    bool accelerating_to_target_ = true;
+    const double target_speed_ = 5.0;
     double lat0_ = 0.0, lon0_ = 0.0;
     double gps_distance_ = 0.0, gps_std_ = 1.0;
     double imu_distance_ = 0.0, imu_std_ = 1.0;

@@ -155,7 +155,18 @@ void SignalIO::socketListener() {
 void SignalIO::publishControlLoop() {
     static size_t idx = 0;
     static auto& trajectory = controller_->getTrajectory();
+    double current_speed = controller_->getLastSpeed();  // if needed, expose a getter
 
+    if (accelerating_to_target_ && current_speed < target_speed_) {
+        geometry_msgs::msg::TwistStamped cmd;
+        cmd.header.stamp = node_->now();
+        cmd.twist.linear.x = std::min(current_speed + 0.2, target_speed_);  // ramp-up speed
+        cmd_pub_->publish(cmd);
+        return;  // skip normal controller logic
+    } else {
+        accelerating_to_target_ = false;
+    }
+    
     if (idx < trajectory.size()) {
         geometry_msgs::msg::TwistStamped cmd;
         cmd.header.stamp = node_->now();

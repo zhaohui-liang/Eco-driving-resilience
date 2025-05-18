@@ -22,6 +22,7 @@ public:
     void setTrafficLightCondition(int state, int time_to_next);
     void generateTrajectory();
     const std::vector<TrajectoryPoint>& getTrajectory() const;
+    double getLastSpeed() const;
 
 private:
     void savePredictedTrajectoryToFile(const std::string& filename) const;

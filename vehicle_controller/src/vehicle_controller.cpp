@@ -44,6 +44,10 @@ void VehicleController::updateYawRate(double yaw_rate) {
     last_yaw_rate_ = yaw_rate;
 }
 
+double VehicleController::getLastSpeed() const {
+    return last_speed_;
+}
+
 void VehicleController::setTrafficLightCondition(int state, int time_to_next) {
     traffic_light_state_ = state;
 
