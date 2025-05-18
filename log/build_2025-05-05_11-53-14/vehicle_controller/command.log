@@ -1,1 +1,0 @@
-Invoking command in '/mnt/c/Users/17863/Downloads/catkin_ws_resilience/build/vehicle_controller': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /mnt/c/Users/17863/Downloads/catkin_ws_resilience/vehicle_controller -DCMAKE_INSTALL_PREFIX=/mnt/c/Users/17863/Downloads/catkin_ws_resilience/install/vehicle_controller

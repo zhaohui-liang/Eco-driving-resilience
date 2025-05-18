@@ -1,4 +1,0 @@
-[0.091s] Invoking command in '/mnt/c/Users/17863/Downloads/catkin_ws_resilience/build/vehicle_sender': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /mnt/c/Users/17863/Downloads/catkin_ws_resilience/build/vehicle_sender -- -j64 -l64
-[0.257s] [ 50%] [32mBuilding CXX object CMakeFiles/vehicle_sender_node.dir/src/vehicle_sender_node.cpp.o[0m
-[8.798s] [100%] [32m[1mLinking CXX executable vehicle_sender_node[0m
-[11.530s] [100%] Built target vehicle_sender_node

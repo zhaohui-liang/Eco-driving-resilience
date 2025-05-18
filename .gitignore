@@ -1,0 +1,21 @@
+# ROS 2 colcon build artifacts
+build/
+install/
+log/
+
+# CMake files
+CMakeFiles/
+CMakeCache.txt
+
+# Python cache
+__pycache__/
+*.pyc
+
+# VSCode or CLion config (optional)
+.vscode/
+.idea/
+
+# Backup files
+*~
+*.swp
+.DS_Store
