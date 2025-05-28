@@ -154,7 +154,7 @@ void SignalIO::socketListener() {
 
 void SignalIO::publishControlLoop() {
     static size_t idx = 0;
-    static auto& trajectory = controller_->getTrajectory();
+    const auto& trajectory = controller_->getTrajectory();
     double current_speed = controller_->getLastSpeed();  // if needed, expose a getter
 
     if (accelerating_to_target_ && current_speed < target_speed_) {
