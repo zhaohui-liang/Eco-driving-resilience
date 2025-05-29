@@ -48,6 +48,7 @@ install(DIRECTORY include/
 install(
   DIRECTORY launch
   DESTINATION share/${PROJECT_NAME}
+  USE_SOURCE_PERMISSIONS
 )
 
 if(BUILD_TESTING)

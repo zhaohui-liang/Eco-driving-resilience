@@ -19,3 +19,6 @@ __pycache__/
 *~
 *.swp
 .DS_Store
+
+# Ignore CSV logs
+*.csv
