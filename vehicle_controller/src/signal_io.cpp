@@ -77,6 +77,9 @@ void SignalIO::imuCallback(const novatel_oem7_msgs::msg::INSPVAX::SharedPtr msg)
     }
 
     double dt = (current_time - last_imu_time_).seconds();
+    RCLCPP_INFO(node_->get_logger(), "IMU clock: %d, GPS clock: %d",
+    current_time.get_clock_type(), last_gps_time_.get_clock_type());
+
     double gps_age = (current_time - last_gps_time_).seconds();
 
     // If GPS is older than 0.3s, consider it stale
@@ -160,7 +163,7 @@ void SignalIO::publishControlLoop() {
     if (accelerating_to_target_ && current_speed < target_speed_) {
         geometry_msgs::msg::TwistStamped cmd;
         cmd.header.stamp = node_->now();
-        cmd.twist.linear.x = std::min(current_speed + 0.2, target_speed_);  // ramp-up speed
+        cmd.twist.linear.x = std::min(current_speed + 0.001, target_speed_);  // ramp-up speed
         cmd_pub_->publish(cmd);
         return;  // skip normal controller logic
     } else {
