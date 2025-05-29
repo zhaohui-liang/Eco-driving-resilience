@@ -41,9 +41,24 @@ target_link_libraries(vehicle_controller_node
 install(TARGETS vehicle_controller_node
   DESTINATION lib/${PROJECT_NAME})
 
-install(DIRECTORY include/
-  DESTINATION include/
-)
+# List all launch files manually or use file globbing
+file(GLOB LAUNCH_FILES ${CMAKE_CURRENT_SOURCE_DIR}/launch/*.launch.py)
+
+foreach(LAUNCH_FILE ${LAUNCH_FILES})
+  get_filename_component(FILENAME ${LAUNCH_FILE} NAME)
+  set(SRC ${LAUNCH_FILE})
+  set(DST ${CMAKE_CURRENT_BINARY_DIR}/${FILENAME})
+
+  execute_process(
+    COMMAND ${CMAKE_COMMAND} -E create_symlink ${SRC} ${DST}
+  )
+
+  install(
+    FILES ${DST}
+    DESTINATION share/${PROJECT_NAME}/launch
+  )
+endforeach()
+
 
 install(
   DIRECTORY launch
