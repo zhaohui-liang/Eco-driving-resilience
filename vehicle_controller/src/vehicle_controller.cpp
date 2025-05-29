@@ -109,7 +109,7 @@ void VehicleController::generateTrajectory() {
 
     std::vector<TrajectoryPoint> temp_trajectory;
     std::vector<double> t_values;
-    for (double t = 0.0; t <= time_to_next_phase_; t += 0.1) {
+    for (double t = 0.0; t <= time_to_next_phase_; t += 0.01) {
         t_values.push_back(t);
     }
 
@@ -128,6 +128,7 @@ void VehicleController::generateTrajectory() {
         for (double t : t_values) {
             double pos = a * pow(t, 3) + b * pow(t, 2) + c * t + x0;
             double spd = 3 * a * pow(t, 2) + 2 * b * t + c;
+            spd = std::min(spd, expected_speed_);
             temp_trajectory.push_back({pos, spd, last_yaw_rate_});
         }
     } else {
@@ -151,6 +152,7 @@ void VehicleController::generateTrajectory() {
             double t = t_values[i];
             double pos = a * pow(t, 3) + b * pow(t, 2) + c * t + x0;
             double spd = 3 * a * pow(t, 2) + 2 * b * t + c;
+            spd = std::min(spd, expected_speed_);
             temp_trajectory.push_back({pos, spd, last_yaw_rate_});
         }
 
@@ -162,6 +164,7 @@ void VehicleController::generateTrajectory() {
             double t = t_values[i] - t_w;
             double pos = a * pow(t, 3) + b * pow(t, 2) + c * t + x0;
             double spd = 3 * a * pow(t, 2) + 2 * b * t + c;
+            spd = std::min(spd, expected_speed_);
             temp_trajectory.push_back({pos, spd, last_yaw_rate_});
         }
     }
