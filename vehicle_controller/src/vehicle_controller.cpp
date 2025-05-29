@@ -28,6 +28,12 @@ VehicleController::VehicleController(rclcpp::Node* parent_node)
 
     trajectory_.clear();
     actual_trajectory_.clear();
+    // Initialize traffic light log
+    std::ofstream file("traffic_light_log.csv");
+    if (file.is_open()) {
+        file << "Timestamp,State,TimeToNextPhase\n";
+        file.close();
+    }
 }
 
 void VehicleController::updatePosition(double position) {
@@ -91,7 +97,14 @@ void VehicleController::setTrafficLightCondition(int state, int time_to_next) {
     if (time_to_next_phase_ > cycle) {
         time_to_next_phase_ = fmod(time_to_next_phase_, cycle);
     }
-
+    // Log traffic light state
+    auto now = std::chrono::system_clock::now();
+    auto now_time = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
+    std::ofstream file("traffic_light_log.csv", std::ios::app);
+    if (file.is_open()) {
+        file << now_time << "," << state << "," << time_to_next_phase_ << "\n";
+        file.close();
+    }
     RCLCPP_INFO(logger_, "State: %d | time_to_next_phase: %.2f s", state, time_to_next_phase_);
 }
 
