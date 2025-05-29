@@ -77,10 +77,16 @@ void SignalIO::imuCallback(const novatel_oem7_msgs::msg::INSPVAX::SharedPtr msg)
     }
 
     double dt = (current_time - last_imu_time_).seconds();
-    RCLCPP_INFO(node_->get_logger(), "IMU clock: %d, GPS clock: %d",
-    current_time.get_clock_type(), last_gps_time_.get_clock_type());
+    // RCLCPP_INFO(node_->get_logger(), "IMU clock: %d, GPS clock: %d",
+    // current_time.get_clock_type(), last_gps_time_.get_clock_type());
 
-    double gps_age = (current_time - last_gps_time_).seconds();
+    double gps_age = 0.0;
+    if (current_time.get_clock_type() == last_gps_time_.get_clock_type()) {
+        gps_age = (current_time - last_gps_time_).seconds();
+    } else {
+        RCLCPP_WARN(node_->get_logger(), "GPS and IMU timestamps use different clock types!");
+        gps_age = std::numeric_limits<double>::max();  // force GPS to be treated as stale
+    }
 
     // If GPS is older than 0.3s, consider it stale
     bool gps_fresh = gps_age < 0.3;
