@@ -29,7 +29,9 @@ SignalIO::SignalIO(rclcpp::Node* node, std::shared_ptr<VehicleController> contro
         std::chrono::seconds(1),
         std::bind(&SignalIO::generateTrajectoryCallback, this));
 
-    start_time_ = node_->now();
+    node_->declare_parameter("signal_offset", 0.0);
+    signal_offset = node_->get_parameter("signal_offset").as_double();
+    start_time_ = node_->now() - rclcpp::Duration::from_seconds(signal_offset)
 
     red_duration_ = node_->get_parameter("red_duration").as_double();
     yellow_duration_ = node_->get_parameter("yellow_duration").as_double();

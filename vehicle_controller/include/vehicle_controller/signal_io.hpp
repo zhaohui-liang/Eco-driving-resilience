@@ -59,6 +59,7 @@ private:
   double red_duration_;
   double green_duration_;
   double yellow_duration_;
+  double signal_offset;
 };
 
 #endif  // VEHICLE_CONTROLLER__SIGNAL_IO_HPP_
