@@ -1,12 +1,10 @@
 // signal_io_internal.hpp
-#ifndef VEHICLE_CONTROLLER__SIGNAL_IO_HPP_
-#define VEHICLE_CONTROLLER__SIGNAL_IO_HPP_
 
 #include <rclcpp/rclcpp.hpp>
 #include <geometry_msgs/msg/twist_stamped.hpp>
-#include <novatel_oem7_msgs/msg/INSPVAX.hpp>
-#include <novatel_oem7_msgs/msg/BESTGNSSPOS.hpp>
-#include <novatel_oem7_msgs/msg/BESTVEL.hpp>
+#include <novatel_oem7_msgs/msg/inspvax.hpp>
+#include <novatel_oem7_msgs/msg/bestgnsspos.hpp>
+#include <novatel_oem7_msgs/msg/bestvel.hpp>
 #include <memory>
 #include <thread>
 #include <mutex>
@@ -62,4 +60,3 @@ private:
   double signal_offset;
 };
 
-#endif  // VEHICLE_CONTROLLER__SIGNAL_IO_HPP_

@@ -31,7 +31,7 @@ SignalIO::SignalIO(rclcpp::Node* node, std::shared_ptr<VehicleController> contro
 
     node_->declare_parameter("signal_offset", 0.0);
     signal_offset = node_->get_parameter("signal_offset").as_double();
-    start_time_ = node_->now() - rclcpp::Duration::from_seconds(signal_offset)
+    start_time_ = node_->now() - rclcpp::Duration::from_seconds(signal_offset);
 
     red_duration_ = node_->get_parameter("red_duration").as_double();
     yellow_duration_ = node_->get_parameter("yellow_duration").as_double();
@@ -139,6 +139,7 @@ void SignalIO::publishControlLoop() {
 void SignalIO::updateSignalPhase() {
     rclcpp::Duration elapsed = node_->now() - start_time_;
     double t = elapsed.seconds();
+    // RCLCPP_INFO(node_->get_logger(), "elapsed time: %.2f s", t);
 
     double cycle = red_duration_ + yellow_duration_ + green_duration_;
     double cycle_time = fmod(t, cycle);
