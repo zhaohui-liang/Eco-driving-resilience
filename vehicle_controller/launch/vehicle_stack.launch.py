@@ -17,9 +17,9 @@ def generate_launch_description():
         name='vehicle_controller',
         parameters=[{
         'expected_speed': 10.0,
-        'red_duration': 31.0,
-        'yellow_duration': 4.0,
-        'green_duration': 37.0,
+        'red_duration': 34.8,
+        'yellow_duration': 3.2,
+        'green_duration': 55.1,
         }]
     )
 
