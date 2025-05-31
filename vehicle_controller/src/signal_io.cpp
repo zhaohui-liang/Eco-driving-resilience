@@ -1,9 +1,6 @@
-// signal_io.cpp (updated with TwistStamped)
+// signal_io_internal.cpp
 #include "vehicle_controller/signal_io.hpp"
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <unistd.h>
-#include <cstring>
+#include <cmath>
 #include <mutex>
 
 SignalIO::SignalIO(rclcpp::Node* node, std::shared_ptr<VehicleController> controller)
@@ -18,12 +15,11 @@ SignalIO::SignalIO(rclcpp::Node* node, std::shared_ptr<VehicleController> contro
         std::bind(&SignalIO::gpsCallback, this, std::placeholders::_1));
     
     speed_sub_ = node_->create_subscription<novatel_oem7_msgs::msg::BESTVEL>(
-    "/bynav/bestvel", 10,
-    std::bind(&SignalIO::speedCallback, this, std::placeholders::_1));
+        "/bynav/bestvel", 10,
+        std::bind(&SignalIO::speedCallback, this, std::placeholders::_1));
 
     cmd_pub_ = node_->create_publisher<geometry_msgs::msg::TwistStamped>(
         "/twist_cmd", 10);
-
 
     control_timer_ = node_->create_wall_timer(
         std::chrono::milliseconds(100),
@@ -33,14 +29,17 @@ SignalIO::SignalIO(rclcpp::Node* node, std::shared_ptr<VehicleController> contro
         std::chrono::seconds(1),
         std::bind(&SignalIO::generateTrajectoryCallback, this));
 
-    startSocketThread();
+    start_time_ = node_->now();
+
+    red_duration_ = node_->get_parameter("red_duration").as_double();
+    yellow_duration_ = node_->get_parameter("yellow_duration").as_double();
+    green_duration_ = node_->get_parameter("green_duration").as_double();
+
+    signal_timer_ = node_->create_wall_timer(
+        std::chrono::milliseconds(100),
+        std::bind(&SignalIO::updateSignalPhase, this));
 }
 
-SignalIO::~SignalIO() {
-    if (socket_thread_.joinable()) {
-        socket_thread_.join();
-    }
-}
 
 void SignalIO::generateTrajectoryCallback() {
     controller_->generateTrajectory();
@@ -54,7 +53,7 @@ void SignalIO::gpsCallback(const novatel_oem7_msgs::msg::BESTGNSSPOS::SharedPtr 
         gps_ref_set_ = true;
         return;
     }
-    last_gps_time_ = msg->header.stamp;  // or msg->header.stamp if available
+    last_gps_time_ = msg->header.stamp;
     auto toRadians = [](double deg) { return deg * M_PI / 180.0; };
     auto gps2Distance = [&](double lat1, double lon1, double lat2, double lon2) {
         lat1 = toRadians(lat1); lon1 = toRadians(lon1);
@@ -77,18 +76,15 @@ void SignalIO::imuCallback(const novatel_oem7_msgs::msg::INSPVAX::SharedPtr msg)
     }
 
     double dt = (current_time - last_imu_time_).seconds();
-    // RCLCPP_INFO(node_->get_logger(), "IMU clock: %d, GPS clock: %d",
-    // current_time.get_clock_type(), last_gps_time_.get_clock_type());
 
     double gps_age = 0.0;
     if (current_time.get_clock_type() == last_gps_time_.get_clock_type()) {
         gps_age = (current_time - last_gps_time_).seconds();
     } else {
         RCLCPP_WARN(node_->get_logger(), "GPS and IMU timestamps use different clock types!");
-        gps_age = std::numeric_limits<double>::max();  // force GPS to be treated as stale
+        gps_age = std::numeric_limits<double>::max();
     }
 
-    // If GPS is older than 0.3s, consider it stale
     bool gps_fresh = gps_age < 0.3;
 
     double velocity = std::hypot(msg->north_velocity, msg->east_velocity);
@@ -112,66 +108,17 @@ void SignalIO::speedCallback(const novatel_oem7_msgs::msg::BESTVEL::SharedPtr ms
     controller_->updateSpeed(velocity);
 }
 
-void SignalIO::startSocketThread() {
-    socket_thread_ = std::thread(&SignalIO::socketListener, this);
-}
-
-void SignalIO::socketListener() {
-    int sock_fd = socket(AF_INET, SOCK_STREAM, 0);
-    if (sock_fd < 0) {
-        RCLCPP_ERROR(node_->get_logger(), "Socket creation failed");
-        return;
-    }
-
-    sockaddr_in addr{};
-    addr.sin_family = AF_INET;
-    addr.sin_port = htons(18080);
-    addr.sin_addr.s_addr = INADDR_ANY;
-
-    if (bind(sock_fd, (sockaddr*)&addr, sizeof(addr)) < 0 || listen(sock_fd, 1) < 0) {
-        RCLCPP_ERROR(node_->get_logger(), "Bind/listen failed");
-        close(sock_fd);
-        return;
-    }
-
-    RCLCPP_INFO(node_->get_logger(), "Waiting for client...");
-    int client_fd = accept(sock_fd, nullptr, nullptr);
-    if (client_fd < 0) {
-        RCLCPP_ERROR(node_->get_logger(), "Failed to accept client");
-        close(sock_fd);
-        return;
-    }
-
-    char buffer[1024];
-    while (rclcpp::ok()) {
-        ssize_t n = recv(client_fd, buffer, sizeof(buffer) - 1, 0);
-        if (n <= 0) continue;
-        buffer[n] = '\0';
-
-        int id, state;
-        int time_left;
-        if (sscanf(buffer, "%d,%d,%d", &id, &state, &time_left) == 3) {
-            controller_->setTrafficLightCondition(state, time_left);
-            RCLCPP_INFO(node_->get_logger(), "Traffic light update: state=%d, time=%d", state, time_left);
-            //controller_->generateTrajectory();
-        }
-    }
-
-    close(client_fd);
-    close(sock_fd);
-}
-
 void SignalIO::publishControlLoop() {
     static size_t idx = 0;
     const auto& trajectory = controller_->getTrajectory();
-    double current_speed = controller_->getLastSpeed();  // if needed, expose a getter
+    double current_speed = controller_->getLastSpeed();
 
     if (accelerating_to_target_ && current_speed < target_speed_) {
         geometry_msgs::msg::TwistStamped cmd;
         cmd.header.stamp = node_->now();
-        cmd.twist.linear.x = std::min(current_speed + 0.001, target_speed_);  // ramp-up speed
+        cmd.twist.linear.x = std::min(current_speed + 0.001, target_speed_);
         cmd_pub_->publish(cmd);
-        return;  // skip normal controller logic
+        return;
     } else {
         accelerating_to_target_ = false;
     }
@@ -185,4 +132,25 @@ void SignalIO::publishControlLoop() {
     } else {
         RCLCPP_WARN(node_->get_logger(), "End of trajectory.");
     }
+}
+
+void SignalIO::updateSignalPhase() {
+    rclcpp::Duration elapsed = node_->now() - start_time_;
+    double t = elapsed.seconds();
+
+    double cycle = red_duration_ + yellow_duration_ + green_duration_;
+    double cycle_time = fmod(t, cycle);
+
+    if (cycle_time < red_duration_) {
+        signal_phase_ = 3;  // Red
+        signal_time_left_ = static_cast<int>((red_duration_ - cycle_time) * 10);
+    } else if (cycle_time < red_duration_ + green_duration_) {
+        signal_phase_ = 6;  // Green
+        signal_time_left_ = static_cast<int>((red_duration_ + green_duration_ - cycle_time) * 10);
+    } else {
+        signal_phase_ = 8;  // Yellow
+        signal_time_left_ = static_cast<int>((cycle - cycle_time) * 10);
+    }
+
+    controller_->setTrafficLightCondition(signal_phase_, signal_time_left_);
 }
