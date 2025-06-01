@@ -48,7 +48,7 @@ private:
 
   std::mutex fusion_mutex_;
 
-  bool accelerating_to_target_ = false;
+  bool accelerating_to_target_ = true;
   double target_speed_ = 0.0;
 
   rclcpp::Time start_time_;
