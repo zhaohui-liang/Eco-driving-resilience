@@ -40,6 +40,8 @@ SignalIO::SignalIO(rclcpp::Node* node, std::shared_ptr<VehicleController> contro
     signal_timer_ = node_->create_wall_timer(
         std::chrono::milliseconds(100),
         std::bind(&SignalIO::updateSignalPhase, this));
+
+    accelerating_to_target_(true);
 }
 
 
