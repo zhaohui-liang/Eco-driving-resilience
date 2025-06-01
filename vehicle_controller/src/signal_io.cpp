@@ -4,7 +4,9 @@
 #include <mutex>
 
 SignalIO::SignalIO(rclcpp::Node* node, std::shared_ptr<VehicleController> controller)
-: node_(node), controller_(controller)
+: node_(node), 
+  controller_(controller),
+  accelerating_to_target_(true)
 {
     vel_sub_ = node_->create_subscription<novatel_oem7_msgs::msg::INSPVAX>(
         "/bynav/inspvax", 10,
@@ -40,8 +42,6 @@ SignalIO::SignalIO(rclcpp::Node* node, std::shared_ptr<VehicleController> contro
     signal_timer_ = node_->create_wall_timer(
         std::chrono::milliseconds(100),
         std::bind(&SignalIO::updateSignalPhase, this));
-
-    accelerating_to_target_(true);
 }
 
 
