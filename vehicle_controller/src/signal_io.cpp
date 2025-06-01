@@ -56,6 +56,17 @@ void SignalIO::gpsCallback(const novatel_oem7_msgs::msg::BESTGNSSPOS::SharedPtr 
         return;  // don't set or update anything during acceleration
     }
 
+    double current_lat = msg->lat;
+    double current_lon = msg->lon;
+
+    if (!gps_ref_set_) {
+        lat0_ = current_lat;
+        lon0_ = current_lon;
+        gps_ref_set_ = true;
+        gps_distance_ = 0.0;
+        return;
+    }
+
     if (!gps_ref_set_) {  
         lat0_ = msg->lat;
         lon0_ = msg->lon;
@@ -71,9 +82,15 @@ void SignalIO::gpsCallback(const novatel_oem7_msgs::msg::BESTGNSSPOS::SharedPtr 
         double a = pow(sin(dlat/2),2) + cos(lat1) * cos(lat2) * pow(sin(dlon/2),2);
         return 6371000.0 * 2 * atan2(sqrt(a), sqrt(1-a));
     };
+    double delta_d = gps2Distance(lat0_, lon0_, current_lat, current_lon);
+    gps_distance_ += delta_d;
 
-    gps_distance_ = gps2Distance(msg->lat, msg->lon, lat0_, lon0_);
+    // Update reference point for next segment
+    lat0_ = current_lat;
+    lon0_ = current_lon;
+    
     gps_std_ = msg->lat_stdev + msg->lon_stdev;
+
     controller_->updatePosition(gps_distance_);
 }
 
