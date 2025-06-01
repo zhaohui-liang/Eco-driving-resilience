@@ -5,8 +5,7 @@
 
 SignalIO::SignalIO(rclcpp::Node* node, std::shared_ptr<VehicleController> controller)
 : node_(node), 
-  controller_(controller),
-  accelerating_to_target_(true)
+  controller_(controller)
 {
     vel_sub_ = node_->create_subscription<novatel_oem7_msgs::msg::INSPVAX>(
         "/bynav/inspvax", 10,
@@ -38,6 +37,7 @@ SignalIO::SignalIO(rclcpp::Node* node, std::shared_ptr<VehicleController> contro
     red_duration_ = node_->get_parameter("red_duration").as_double();
     yellow_duration_ = node_->get_parameter("yellow_duration").as_double();
     green_duration_ = node_->get_parameter("green_duration").as_double();
+    expected_speed_ = node->get_parameter("expected_speed").as_double();
 
     signal_timer_ = node_->create_wall_timer(
         std::chrono::milliseconds(100),
@@ -116,11 +116,12 @@ void SignalIO::publishControlLoop() {
     static size_t idx = 0;
     const auto& trajectory = controller_->getTrajectory();
     double current_speed = controller_->getLastSpeed();
+    RCLCPP_WARN(node_->get_logger(), "accelerating_to_target_:%d",accelerating_to_target_);
 
-    if (accelerating_to_target_ && current_speed < target_speed_) {
+    if (accelerating_to_target_ && current_speed < expected_speed_) {
         geometry_msgs::msg::TwistStamped cmd;
         cmd.header.stamp = node_->now();
-        cmd.twist.linear.x = std::min(current_speed + 0.001, target_speed_);
+        cmd.twist.linear.x = std::min(current_speed + 0.001, expected_speed_);
         cmd_pub_->publish(cmd);
         return;
     } else {
