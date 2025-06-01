@@ -46,7 +46,9 @@ SignalIO::SignalIO(rclcpp::Node* node, std::shared_ptr<VehicleController> contro
 
 
 void SignalIO::generateTrajectoryCallback() {
-    controller_->generateTrajectory();
+    if (!accelerating_to_target_) {
+        controller_->generateTrajectory();
+    }
 }
 
 void SignalIO::gpsCallback(const novatel_oem7_msgs::msg::BESTGNSSPOS::SharedPtr msg) {
@@ -126,6 +128,7 @@ void SignalIO::publishControlLoop() {
         return;
     } else {
         accelerating_to_target_ = false;
+        controller_->generateTrajectory();
     }
     
     if (idx < trajectory.size()) {
