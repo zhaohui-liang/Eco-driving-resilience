@@ -37,7 +37,9 @@ SignalIO::SignalIO(rclcpp::Node* node, std::shared_ptr<VehicleController> contro
     red_duration_ = node_->get_parameter("red_duration").as_double();
     yellow_duration_ = node_->get_parameter("yellow_duration").as_double();
     green_duration_ = node_->get_parameter("green_duration").as_double();
-    expected_speed_ = node->get_parameter("expected_speed").as_double();
+
+    node_->declare_parameter("entry_speed", 0.0);
+    entry_speed_ = node->get_parameter("entry_speed").as_double();
 
     signal_timer_ = node_->create_wall_timer(
         std::chrono::milliseconds(100),
@@ -53,6 +55,11 @@ void SignalIO::generateTrajectoryCallback() {
 
 void SignalIO::gpsCallback(const novatel_oem7_msgs::msg::BESTGNSSPOS::SharedPtr msg) {
     std::lock_guard<std::mutex> lock(fusion_mutex_);
+    
+    if (accelerating_to_target_) {
+        return;  // don't set or update anything during acceleration
+    }
+
     if (!gps_ref_set_) {  
         lat0_ = msg->lat;
         lon0_ = msg->lon;
@@ -94,6 +101,11 @@ void SignalIO::imuCallback(const novatel_oem7_msgs::msg::INSPVAX::SharedPtr msg)
     bool gps_fresh = gps_age < 0.3;
 
     double velocity = std::hypot(msg->north_velocity, msg->east_velocity);
+
+    if (accelerating_to_target_) {
+        return;  // skip distance accumulation until acceleration is done
+    }
+
     imu_distance_ += velocity * dt;
     imu_std_ = msg->north_velocity_stdev + msg->east_velocity_stdev;
 
@@ -112,34 +124,6 @@ void SignalIO::imuCallback(const novatel_oem7_msgs::msg::INSPVAX::SharedPtr msg)
 void SignalIO::speedCallback(const novatel_oem7_msgs::msg::BESTVEL::SharedPtr msg) {
     double velocity = msg->hor_speed;
     controller_->updateSpeed(velocity);
-}
-
-void SignalIO::publishControlLoop() {
-    static size_t idx = 0;
-    const auto& trajectory = controller_->getTrajectory();
-    double current_speed = controller_->getLastSpeed();
-    RCLCPP_WARN(node_->get_logger(), "accelerating_to_target_:%d",accelerating_to_target_);
-
-    if (accelerating_to_target_ && current_speed < expected_speed_) {
-        geometry_msgs::msg::TwistStamped cmd;
-        cmd.header.stamp = node_->now();
-        cmd.twist.linear.x = std::min(current_speed + 1.0, expected_speed_);
-        cmd_pub_->publish(cmd);
-        return;
-    } else {
-        accelerating_to_target_ = false;
-        controller_->generateTrajectory();
-    }
-    
-    if (idx < trajectory.size()) {
-        geometry_msgs::msg::TwistStamped cmd;
-        cmd.header.stamp = node_->now();
-        cmd.twist.linear.x = trajectory[idx].speed;
-        cmd_pub_->publish(cmd);
-        idx++;
-    } else {
-        RCLCPP_WARN(node_->get_logger(), "End of trajectory.");
-    }
 }
 
 void SignalIO::updateSignalPhase() {
@@ -162,4 +146,34 @@ void SignalIO::updateSignalPhase() {
     }
 
     controller_->setTrafficLightCondition(signal_phase_, signal_time_left_);
+}
+
+void SignalIO::publishControlLoop() {
+    static size_t idx = 0;
+    const auto& trajectory = controller_->getTrajectory();
+    double current_speed = controller_->getLastSpeed();
+    RCLCPP_WARN(node_->get_logger(), "accelerating_to_target_:%d",accelerating_to_target_);
+
+    if (accelerating_to_target_ && current_speed < entry_speed_) {
+        geometry_msgs::msg::TwistStamped cmd;
+        cmd.header.stamp = node_->now();
+        cmd.twist.linear.x = std::min(current_speed + 1.0, entry_speed_);
+        cmd_pub_->publish(cmd);
+        return;
+    } else {
+        accelerating_to_target_ = false;
+        imu_distance_ = 0.0;      // start clean
+        gps_distance_ = 0.0;
+        controller_->generateTrajectory();
+    }
+    
+    if (idx < trajectory.size()) {
+        geometry_msgs::msg::TwistStamped cmd;
+        cmd.header.stamp = node_->now();
+        cmd.twist.linear.x = trajectory[idx].speed;
+        cmd_pub_->publish(cmd);
+        idx++;
+    } else {
+        RCLCPP_WARN(node_->get_logger(), "End of trajectory.");
+    }
 }

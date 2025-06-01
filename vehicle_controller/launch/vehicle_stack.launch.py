@@ -16,6 +16,7 @@ def generate_launch_description():
         executable='vehicle_controller_node',
         name='vehicle_controller',
         parameters=[{
+        'entry_speed': 5.0,
         'expected_speed': 10.0,
         'red_duration': 34.8,
         'yellow_duration': 3.2,
