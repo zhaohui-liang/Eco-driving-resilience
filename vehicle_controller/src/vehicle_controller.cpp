@@ -57,7 +57,7 @@ double VehicleController::getLastSpeed() const {
 void VehicleController::setTrafficLightCondition(int state, int time_to_next) {
     traffic_light_state_ = state;
 
-    double t = time_to_next / 10.0; // Convert from tenths of seconds to seconds
+    doublet  = time_to_next / 10.0; // Convert from tenths of seconds to seconds
     double cycle = red_duration_ + yellow_duration_ + green_duration_;
     
     double d = traffic_light_position_ - last_position_;
@@ -76,7 +76,7 @@ void VehicleController::setTrafficLightCondition(int state, int time_to_next) {
 
         case 6: // green
             if (t > t_e) {
-                time_to_next_phase_ = t_e;  // vehicle can make it through
+                time_to_next_phase_ = t_e-0.1;  // vehicle can make it through, offset 0.1 for GPS drift
             } else {
                 time_to_next_phase_ = t + red_duration_ + yellow_duration_;  // wait for next green
             }
@@ -113,12 +113,21 @@ void VehicleController::generateTrajectory() {
     trajectory_.clear();
     double d = traffic_light_position_ - last_position_;
     if (d <= 0.0) {
+        if (last_speed_ <= 0.01) {
+            RCLCPP_WARN(logger_, "Vehicle already stopped. No deceleration needed.");
+            return;
+        }
         RCLCPP_WARN(logger_, "Vehicle has reached or passed the traffic light. Decelerating to stop.");
         double decel_duration = std::max(last_speed_ / 1.0, 1.0);  // at least 1 second, assume 1 m/s² decel
         for (double t = 0.0; t <= decel_duration; t += 0.01) {
             double spd = std::max(last_speed_ - t * 1.0, 0.0);  // linear deceleration
             double pos = last_position_ + last_speed_ * t - 0.5 * 1.0 * t * t;
             trajectory_.push_back({pos, spd, last_yaw_rate_});
+        }
+        // Append extra points to ensure vehicle is stationary
+        constexpr double stopped_extension_time = 2.0;  // 2 seconds of "stopped" time
+        for (double t = 0.0; t <= stopped_extension_time; t += 0.01) {
+            trajectory_.push_back({final_pos, 0.0, last_yaw_rate_});
         }
         savePredictedTrajectoryToFile("predicted_trajectory.csv");
         RCLCPP_INFO(logger_, "Deceleration trajectory generated (d <= 0). Duration: %.2f s", decel_duration);
