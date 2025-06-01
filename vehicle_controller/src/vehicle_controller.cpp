@@ -57,7 +57,7 @@ double VehicleController::getLastSpeed() const {
 void VehicleController::setTrafficLightCondition(int state, int time_to_next) {
     traffic_light_state_ = state;
 
-    doublet  = time_to_next / 10.0; // Convert from tenths of seconds to seconds
+    double t  = time_to_next / 10.0; // Convert from tenths of seconds to seconds
     double cycle = red_duration_ + yellow_duration_ + green_duration_;
     
     double d = traffic_light_position_ - last_position_;
