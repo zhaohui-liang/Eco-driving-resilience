@@ -7,10 +7,6 @@ SignalIO::SignalIO(rclcpp::Node* node, std::shared_ptr<VehicleController> contro
 : node_(node), 
   controller_(controller)
 {
-    vel_sub_ = node_->create_subscription<novatel_oem7_msgs::msg::INSPVAX>(
-        "/bynav/inspvax", 10,
-        std::bind(&SignalIO::imuCallback, this, std::placeholders::_1));
-
     pos_sub_ = node_->create_subscription<novatel_oem7_msgs::msg::BESTGNSSPOS>(
         "/bynav/bestgnsspos", 10,
         std::bind(&SignalIO::gpsCallback, this, std::placeholders::_1));
@@ -78,48 +74,9 @@ void SignalIO::gpsCallback(const novatel_oem7_msgs::msg::BESTGNSSPOS::SharedPtr 
 
     gps_distance_ = gps2Distance(msg->lat, msg->lon, lat0_, lon0_);
     gps_std_ = msg->lat_stdev + msg->lon_stdev;
+    controller_->updatePosition(gps_distance_);
 }
 
-void SignalIO::imuCallback(const novatel_oem7_msgs::msg::INSPVAX::SharedPtr msg) {
-    std::lock_guard<std::mutex> lock(fusion_mutex_);
-    rclcpp::Time current_time = msg->header.stamp;
-    if (last_imu_time_.nanoseconds() == 0) {
-        last_imu_time_ = current_time;
-        return;
-    }
-
-    double dt = (current_time - last_imu_time_).seconds();
-
-    double gps_age = 0.0;
-    if (current_time.get_clock_type() == last_gps_time_.get_clock_type()) {
-        gps_age = (current_time - last_gps_time_).seconds();
-    } else {
-        RCLCPP_WARN(node_->get_logger(), "GPS and IMU timestamps use different clock types!");
-        gps_age = std::numeric_limits<double>::max();
-    }
-
-    bool gps_fresh = gps_age < 0.3;
-
-    double velocity = std::hypot(msg->north_velocity, msg->east_velocity);
-
-    if (accelerating_to_target_) {
-        return;  // skip distance accumulation until acceleration is done
-    }
-
-    imu_distance_ += velocity * dt;
-    imu_std_ = msg->north_velocity_stdev + msg->east_velocity_stdev;
-
-    last_imu_time_ = current_time;
-
-    if (gps_fresh) {
-        double w_gps = imu_std_ / (gps_std_ + imu_std_);
-        double w_imu = 1.0 - w_gps;
-        double fused_dist = w_gps * gps_distance_ + w_imu * imu_distance_;
-        controller_->updatePosition(fused_dist);
-    } else {
-        controller_->updatePosition(imu_distance_);
-    }
-}
 
 void SignalIO::speedCallback(const novatel_oem7_msgs::msg::BESTVEL::SharedPtr msg) {
     double velocity = msg->hor_speed;
@@ -162,8 +119,7 @@ void SignalIO::publishControlLoop() {
         return;
     } else {
         accelerating_to_target_ = false;
-        imu_distance_ = 0.0;      // start clean
-        gps_distance_ = 0.0;
+        gps_distance_ = 0.0;  // start clean
         controller_->generateTrajectory();
     }
     
