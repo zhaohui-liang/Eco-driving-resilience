@@ -123,7 +123,7 @@ void SignalIO::publishControlLoop() {
     if (accelerating_to_target_ && current_speed < expected_speed_) {
         geometry_msgs::msg::TwistStamped cmd;
         cmd.header.stamp = node_->now();
-        cmd.twist.linear.x = std::min(current_speed + 0.001, expected_speed_);
+        cmd.twist.linear.x = std::min(current_speed + 1.0, expected_speed_);
         cmd_pub_->publish(cmd);
         return;
     } else {
