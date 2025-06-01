@@ -127,7 +127,7 @@ void VehicleController::generateTrajectory() {
         // Append extra points to ensure vehicle is stationary
         constexpr double stopped_extension_time = 2.0;  // 2 seconds of "stopped" time
         for (double t = 0.0; t <= stopped_extension_time; t += 0.01) {
-            trajectory_.push_back({final_pos, 0.0, last_yaw_rate_});
+            trajectory_.push_back({last_position_, 0.0, last_yaw_rate_});
         }
         savePredictedTrajectoryToFile("predicted_trajectory.csv");
         RCLCPP_INFO(logger_, "Deceleration trajectory generated (d <= 0). Duration: %.2f s", decel_duration);
