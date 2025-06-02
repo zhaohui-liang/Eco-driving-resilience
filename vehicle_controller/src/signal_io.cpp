@@ -125,7 +125,7 @@ void SignalIO::publishControlLoop() {
     if (accelerating_to_target_ && current_speed < entry_speed_) {
         geometry_msgs::msg::TwistStamped cmd;
         cmd.header.stamp = node_->now();
-        cmd.twist.linear.x = std::min(current_speed + 1.0, entry_speed_);
+        cmd.twist.linear.x = current_speed + 1.0;
         cmd_pub_->publish(cmd);
         return;
     } else {
@@ -135,9 +135,9 @@ void SignalIO::publishControlLoop() {
     }
     
     if (idx < trajectory.size()) {
-        geometry_msgs::msg::TwistStamped cmd;
+        geometry_msgs::msg::TwistStamped cmd; 
         cmd.header.stamp = node_->now();
-        cmd.twist.linear.x = trajectory[idx].speed;
+        cmd.twist.linear.x = trajectory[idx].speed + 0.0001;
         cmd_pub_->publish(cmd);
         idx++;
     } else {
