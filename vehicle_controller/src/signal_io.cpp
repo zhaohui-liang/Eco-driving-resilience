@@ -66,13 +66,7 @@ void SignalIO::gpsCallback(const novatel_oem7_msgs::msg::BESTGNSSPOS::SharedPtr 
         gps_distance_ = 0.0;
         return;
     }
-
-    if (!gps_ref_set_) {  
-        lat0_ = msg->lat;
-        lon0_ = msg->lon;
-        gps_ref_set_ = true;
-        return;
-    }
+    
     last_gps_time_ = msg->header.stamp;
     auto toRadians = [](double deg) { return deg * M_PI / 180.0; };
     auto gps2Distance = [&](double lat1, double lon1, double lat2, double lon2) {
@@ -88,7 +82,7 @@ void SignalIO::gpsCallback(const novatel_oem7_msgs::msg::BESTGNSSPOS::SharedPtr 
     // Update reference point for next segment
     lat0_ = current_lat;
     lon0_ = current_lon;
-    
+
     gps_std_ = msg->lat_stdev + msg->lon_stdev;
 
     controller_->updatePosition(gps_distance_);
