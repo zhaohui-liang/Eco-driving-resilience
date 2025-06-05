@@ -59,15 +59,20 @@ void VehicleController::setTrafficLightCondition(int state, int time_to_next) {
 
     double t  = time_to_next / 10.0; // Convert from tenths of seconds to seconds
     double cycle = red_duration_ + yellow_duration_ + green_duration_;
-    
+
     double d = traffic_light_position_ - last_position_;
+
     // Calculate earliest arrival time t_e
     double t_e = 0.0;
     if (d > (pow(expected_speed_, 2) - pow(last_speed_, 2)) / 1.0) {
-        t_e = (expected_speed_ - last_speed_) / 2.0 + (d - (pow(expected_speed_, 2) - pow(last_speed_, 2)) / 1.0) / expected_speed_;
+        t_e = (expected_speed_ - last_speed_) / 2.0 + 
+              (d - (pow(expected_speed_, 2) - pow(last_speed_, 2)) / 1.0) / expected_speed_;
     } else {
         t_e = sqrt(d + pow(last_speed_ / 2.0, 2)) - last_speed_ / 2.0;
     }
+
+    // Calculate critical time t_c
+    double t_c = 3.0 * d / (last_speed_ + expected_speed_ - sqrt(last_speed_ * expected_speed_));
 
     switch (state) {
         case 3: // red
@@ -76,7 +81,7 @@ void VehicleController::setTrafficLightCondition(int state, int time_to_next) {
 
         case 6: // green
             if (t > t_e) {
-                time_to_next_phase_ = t_e-0.1;  // vehicle can make it through, offset 0.1 for GPS drift
+                time_to_next_phase_ = t_e - 0.1;  // vehicle can make it through, offset for GPS drift
             } else {
                 time_to_next_phase_ = t + red_duration_ + yellow_duration_;  // wait for next green
             }
@@ -92,24 +97,32 @@ void VehicleController::setTrafficLightCondition(int state, int time_to_next) {
             break;
     }
 
-
-    // Clamp to within cycle
+    // Clamp within cycle time
     if (time_to_next_phase_ > cycle) {
         time_to_next_phase_ = fmod(time_to_next_phase_, cycle);
     }
-    // Log traffic light state
+
+    // Log to CSV (misc_log.csv)
     auto now = std::chrono::system_clock::now();
     auto now_time = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
-    std::ofstream file("traffic_light_log.csv", std::ios::app);
+
+    std::ofstream file("misc_log.csv", std::ios::app);
     if (file.is_open()) {
-        file << now_time << "," << state << "," << time_to_next_phase_ << "\n";
+        file << now_time << "," << state << "," << d << "," << last_speed_ << ","
+             << t_e << "," << t_c << "," << time_to_next_phase_ << "\n";
         file.close();
+    } else {
+        RCLCPP_WARN(logger_, "Failed to open misc_log.csv for writing.");
     }
-    RCLCPP_INFO(logger_, "State: %d | time_to_next_phase: %.2f s", state, time_to_next_phase_);
+
+    RCLCPP_INFO(logger_, "State: %d | d: %.2f | v: %.2f | t_e: %.2f | t_c: %.2f | t_phase: %.2f",
+                state, d, last_speed_, t_e, t_c, time_to_next_phase_);
 }
 
 
+
 void VehicleController::generateTrajectory() {
+    constexpr double EPSILON = 1e-3;
     trajectory_.clear();
     double d = traffic_light_position_ - last_position_;
     if (d <= 0.0) {
@@ -124,8 +137,7 @@ void VehicleController::generateTrajectory() {
             double pos = last_position_ + last_speed_ * t - 0.5 * 1.0 * t * t;
             trajectory_.push_back({pos, spd, last_yaw_rate_});
         }
-        // Append extra points to ensure vehicle is stationary
-        constexpr double stopped_extension_time = 2.0;  // 2 seconds of "stopped" time
+        constexpr double stopped_extension_time = 2.0;
         for (double t = 0.0; t <= stopped_extension_time; t += 0.01) {
             trajectory_.push_back({last_position_, 0.0, last_yaw_rate_});
         }
@@ -134,12 +146,15 @@ void VehicleController::generateTrajectory() {
         trajectory_count_++;
         return;
     }
+
     double t_e = 0.0;
     if (d > (pow(expected_speed_, 2) - pow(last_speed_, 2)) / 1.0) {
-        t_e = (expected_speed_ - last_speed_) / 2.0 + (d - (pow(expected_speed_, 2) - pow(last_speed_, 2)) / 1.0) / expected_speed_;
+        t_e = (expected_speed_ - last_speed_) / 2.0 + 
+              (d - (pow(expected_speed_, 2) - pow(last_speed_, 2)) / 1.0) / expected_speed_;
     } else {
         t_e = sqrt(d + pow(last_speed_ / 2.0, 2)) - last_speed_ / 2.0;
     }
+
     double t_c = 3.0 * d / (last_speed_ + expected_speed_ - sqrt(last_speed_ * expected_speed_));
 
     std::vector<TrajectoryPoint> temp_trajectory;
@@ -148,15 +163,20 @@ void VehicleController::generateTrajectory() {
         t_values.push_back(t);
     }
 
-    if (time_to_next_phase_ <= t_e) {
+    // Case 1: Constant speed
+    if (time_to_next_phase_ <= t_e + EPSILON) {
         for (double t : t_values) {
             double pos = expected_speed_ * t;
             double spd = expected_speed_;
             temp_trajectory.push_back({pos, spd, last_yaw_rate_});
         }
-    } else if (time_to_next_phase_ < t_c) {
-        double a = 2 * d / pow(time_to_next_phase_, 3) + (expected_speed_ + last_speed_) / pow(time_to_next_phase_, 2);
-        double b = 3 * d / pow(time_to_next_phase_, 2) - (2 * last_speed_ + expected_speed_) / time_to_next_phase_;
+    }
+    // Case 2: Polynomial interpolation deceleration
+    else if (time_to_next_phase_ < t_c - EPSILON) {
+        double a = 2 * d / pow(time_to_next_phase_, 3) + 
+                   (expected_speed_ + last_speed_) / pow(time_to_next_phase_, 2);
+        double b = 3 * d / pow(time_to_next_phase_, 2) - 
+                   (2 * last_speed_ + expected_speed_) / time_to_next_phase_;
         double c = last_speed_;
         double x0 = last_position_;
 
@@ -166,10 +186,14 @@ void VehicleController::generateTrajectory() {
             spd = std::min(spd, expected_speed_);
             temp_trajectory.push_back({pos, spd, last_yaw_rate_});
         }
-    } else {
+    }
+    // Case 3: Wait + restart
+    else {
         double t_w = time_to_next_phase_ - t_c;
-        double a = 2 * d / pow(t_c, 3) + (expected_speed_ + last_speed_) / pow(t_c, 2);
-        double b = 3 * d / pow(t_c, 2) - (2 * last_speed_ + expected_speed_) / t_c;
+        double a = 2 * d / pow(t_c, 3) + 
+                   (expected_speed_ + last_speed_) / pow(t_c, 2);
+        double b = 3 * d / pow(t_c, 2) - 
+                   (2 * last_speed_ + expected_speed_) / t_c;
         double c = last_speed_;
         double x0 = last_position_;
 
@@ -209,6 +233,7 @@ void VehicleController::generateTrajectory() {
     RCLCPP_INFO(logger_, "Trajectory generated with %zu points.", trajectory_.size());
     trajectory_count_++;
 }
+
 
 const std::vector<TrajectoryPoint>& VehicleController::getTrajectory() const {
     return trajectory_;
