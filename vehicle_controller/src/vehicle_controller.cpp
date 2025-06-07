@@ -75,7 +75,7 @@ void VehicleController::setTrafficLightCondition(int state, int time_to_next) {
 
         case 6: // green
             if (t > t_e) {
-                time_to_next_phase_ = t_e - 0.05;  // vehicle can make it through, offset for GPS drift
+                time_to_next_phase_ = t_e;
             } else {
                 time_to_next_phase_ = t + red_duration_ + yellow_duration_;  // wait for next green
             }
@@ -123,7 +123,7 @@ void VehicleController::setTrafficLightCondition(int state, int time_to_next) {
 
 
 void VehicleController::generateTrajectory() {
-    constexpr double EPSILON = 1e-1;
+    constexpr double EPSILON = 1e-2;
     trajectory_.clear();
     double d = traffic_light_position_ - last_position_;
     if (d <= 0.0) {
@@ -232,6 +232,7 @@ void VehicleController::generateTrajectory() {
     trajectory_ = temp_trajectory;
     savePredictedTrajectoryToFile("predicted_trajectory.csv");
     RCLCPP_INFO(logger_, "Trajectory generated with %zu points.", trajectory_.size());
+    RCLCPP_ERROR(logger_, "time_to_next_phase:%.2f,t_e:%.2f", time_to_next_phase_,t_e);
     trajectory_count_++;
 }
 
