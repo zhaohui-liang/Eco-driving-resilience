@@ -75,7 +75,7 @@ void VehicleController::setTrafficLightCondition(int state, int time_to_next) {
 
         case 6: // green
             if (t > t_e) {
-                time_to_next_phase_ = t_e - 0.1;  // vehicle can make it through, offset for GPS drift
+                time_to_next_phase_ = t_e - 0.05;  // vehicle can make it through, offset for GPS drift
             } else {
                 time_to_next_phase_ = t + red_duration_ + yellow_duration_;  // wait for next green
             }
