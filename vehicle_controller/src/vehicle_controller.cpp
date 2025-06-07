@@ -28,12 +28,6 @@ VehicleController::VehicleController(rclcpp::Node* parent_node)
 
     trajectory_.clear();
     actual_trajectory_.clear();
-    // Initialize traffic light log
-    std::ofstream file("traffic_light_log.csv");
-    if (file.is_open()) {
-        file << "Timestamp,State,TimeToNextPhase\n";
-        file.close();
-    }
 }
 
 void VehicleController::updatePosition(double position) {
@@ -105,9 +99,16 @@ void VehicleController::setTrafficLightCondition(int state, int time_to_next) {
     // Log to CSV (misc_log.csv)
     auto now = std::chrono::system_clock::now();
     auto now_time = std::chrono::duration_cast<std::chrono::milliseconds>(now.time_since_epoch()).count();
-
+    // Check if file exists and is empty
+    bool write_header = false;
+    if (!std::filesystem::exists("misc_log.csv") || std::filesystem::file_size("misc_log.csv") == 0) {
+        write_header = true;
+    }
     std::ofstream file("misc_log.csv", std::ios::app);
     if (file.is_open()) {
+        if (write_header) {
+        file << "timestamp_ms,state,distance,last_speed,t_e,t_c,time_to_next_phase\n";
+        }
         file << now_time << "," << state << "," << d << "," << last_speed_ << ","
              << t_e << "," << t_c << "," << time_to_next_phase_ << "\n";
         file.close();
