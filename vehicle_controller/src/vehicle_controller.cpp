@@ -107,7 +107,7 @@ void VehicleController::setTrafficLightCondition(int state, int time_to_next) {
     std::ofstream file("misc_log.csv", std::ios::app);
     if (file.is_open()) {
         if (write_header) {
-        file << "timestamp_ms,state,distance,last_speed,t_e,t_c,time_to_next_phase\n";
+        file << "timestamp,state,distance,last_speed,t_e,t_c,time_to_next_phase\n";
         }
         file << now_time << "," << state << "," << d << "," << last_speed_ << ","
              << t_e << "," << t_c << "," << time_to_next_phase_ << "\n";
