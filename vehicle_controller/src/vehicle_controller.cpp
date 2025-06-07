@@ -123,7 +123,7 @@ void VehicleController::setTrafficLightCondition(int state, int time_to_next) {
 
 
 void VehicleController::generateTrajectory() {
-    constexpr double EPSILON = 1e-2;
+    constexpr double EPSILON = 1e-1;
     trajectory_.clear();
     double d = traffic_light_position_ - last_position_;
     if (d <= 0.0) {
