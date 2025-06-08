@@ -42,4 +42,6 @@ private:
     double yellow_duration_;
     std::vector<TrajectoryPoint> trajectory_;
     std::vector<TrajectoryPoint> actual_trajectory_;
+    double t_e_;
+    double t_c_;
 };

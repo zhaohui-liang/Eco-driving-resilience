@@ -57,16 +57,15 @@ void VehicleController::setTrafficLightCondition(int state, int time_to_next) {
     double d = traffic_light_position_ - last_position_;
 
     // Calculate earliest arrival time t_e
-    double t_e = 0.0;
     if (d > (pow(expected_speed_, 2) - pow(last_speed_, 2)) / 1.0) {
-        t_e = (expected_speed_ - last_speed_) / 2.0 + 
+        t_e_ = (expected_speed_ - last_speed_) / 2.0 + 
               (d - (pow(expected_speed_, 2) - pow(last_speed_, 2)) / 1.0) / expected_speed_;
     } else {
-        t_e = sqrt(d + pow(last_speed_ / 2.0, 2)) - last_speed_ / 2.0;
+        t_e_ = sqrt(d + pow(last_speed_ / 2.0, 2)) - last_speed_ / 2.0;
     }
 
     // Calculate critical time t_c
-    double t_c = 3.0 * d / (last_speed_ + expected_speed_ - sqrt(last_speed_ * expected_speed_));
+    t_c_ = 3.0 * d / (last_speed_ + expected_speed_ - sqrt(last_speed_ * expected_speed_));
 
     switch (state) {
         case 3: // red
@@ -74,8 +73,8 @@ void VehicleController::setTrafficLightCondition(int state, int time_to_next) {
             break;
 
         case 6: // green
-            if (t > t_e) {
-                time_to_next_phase_ = t_e;
+            if (t > t_e_) {
+                time_to_next_phase_ = t_e_;
             } else {
                 time_to_next_phase_ = t + red_duration_ + yellow_duration_;  // wait for next green
             }
@@ -107,17 +106,17 @@ void VehicleController::setTrafficLightCondition(int state, int time_to_next) {
     std::ofstream file("misc_log.csv", std::ios::app);
     if (file.is_open()) {
         if (write_header) {
-        file << "timestamp,state,distance,last_speed,t_e,t_c,time_to_next_phase\n";
+        file << "timestamp,state,distance,last_speed,t_e_,t_c_,time_to_next_phase\n";
         }
         file << now_time << "," << state << "," << d << "," << last_speed_ << ","
-             << t_e << "," << t_c << "," << time_to_next_phase_ << "\n";
+             << t_e_ << "," << t_c_ << "," << time_to_next_phase_ << "\n";
         file.close();
     } else {
         RCLCPP_WARN(logger_, "Failed to open misc_log.csv for writing.");
     }
 
-    RCLCPP_INFO(logger_, "State: %d | d: %.2f | v: %.2f | t_e: %.2f | t_c: %.2f | t_phase: %.2f",
-                state, d, last_speed_, t_e, t_c, time_to_next_phase_);
+    RCLCPP_INFO(logger_, "State: %d | d: %.2f | v: %.2f | t_e_: %.2f | t_c_: %.2f | t_phase: %.2f",
+                state, d, last_speed_, t_e_, t_c_, time_to_next_phase_);
 }
 
 
@@ -148,15 +147,8 @@ void VehicleController::generateTrajectory() {
         return;
     }
 
-    double t_e = 0.0;
-    if (d > (pow(expected_speed_, 2) - pow(last_speed_, 2)) / 1.0) {
-        t_e = (expected_speed_ - last_speed_) / 2.0 + 
-              (d - (pow(expected_speed_, 2) - pow(last_speed_, 2)) / 1.0) / expected_speed_;
-    } else {
-        t_e = sqrt(d + pow(last_speed_ / 2.0, 2)) - last_speed_ / 2.0;
-    }
-
-    double t_c = 3.0 * d / (last_speed_ + expected_speed_ - sqrt(last_speed_ * expected_speed_));
+    double t_e = t_e_;
+    double t_c = t_c_;
 
     std::vector<TrajectoryPoint> temp_trajectory;
     std::vector<double> t_values;
