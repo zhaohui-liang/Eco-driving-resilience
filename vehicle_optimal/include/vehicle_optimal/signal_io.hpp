@@ -8,7 +8,7 @@
 #include <memory>
 #include <thread>
 #include <mutex>
-#include "vehicle_controller/vehicle_controller.hpp"
+#include "vehicle_optimal/vehicle_optimal.hpp"
 
 class SignalIO {
 public:

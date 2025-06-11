@@ -30,6 +30,13 @@ public:
 private:
     void savePredictedTrajectoryToFile(const std::string& filename) const;
     void saveActualTrajectoryToFile(const std::string& filename) const;
+    bool solveEcoDrivingOptimization(
+    double x0, double v0,
+    double xf, double vf,
+    double tf, double dt,
+    std::vector<double>& x_opt,
+    std::vector<double>& v_opt);
+
 
     rclcpp::Logger logger_;
     double last_position_;

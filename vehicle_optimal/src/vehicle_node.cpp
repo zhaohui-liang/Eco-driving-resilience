@@ -2,8 +2,8 @@
 // Entry point for the ROS2 vehicle controller node
 
 #include <rclcpp/rclcpp.hpp>
-#include "vehicle_controller/vehicle_controller.hpp"
-#include "vehicle_controller/signal_io.hpp"
+#include "vehicle_optimal/vehicle_optimal.hpp"
+#include "vehicle_optimal/signal_io.hpp"
 
 class VehicleNode : public rclcpp::Node {
 public:

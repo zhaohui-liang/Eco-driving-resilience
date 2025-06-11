@@ -1,5 +1,5 @@
 // vehicle_controller.cpp
-#include "vehicle_controller/vehicle_controller.hpp"
+#include "vehicle_optimal/vehicle_optimal.hpp"
 #include <cmath>
 #include <fstream>
 #include <iomanip>
@@ -154,121 +154,101 @@ void VehicleController::generateTrajectory() {
     trajectory_count_++;
 }
 
-bool VehicleController::solveEcoDrivingOptimization(double x0, double v0,
-                                                    double xf, double vf,
-                                                    double tf, double dt,
-                                                    std::vector<double>& x_out,
-                                                    std::vector<double>& v_out) {
-    const int N = static_cast<int>(tf / dt);
-    const int n_vars = 3 * N + 2;  // x[0..N], v[0..N], a[0..N-1]
-    const int n_constraints = 2 * N + 4;
+bool VehicleController::solveEcoDrivingOptimization(
+    double x0, double v0,
+    double xf, double vf,
+    double tf, double dt,
+    std::vector<double>& x_out,
+    std::vector<double>& v_out)
+{
+    int N = static_cast<int>(tf / dt);
+    const int n_var = 2 * N; // [x1...xN, v1...vN]
 
-    const double alpha = 0.15, beta = 0.0025, gamma = 0.00006;
-    const double delta = 0.00035, epsilon = 0.0004;
-    const double v_max = 10.0;
-    const double a_min = -2.0, a_max = 2.0;
+    // Hessian: penalize acceleration squared => differences in velocity
+    Eigen::SparseMatrix<double> hessian(n_var, n_var);
+    Eigen::VectorXd gradient = Eigen::VectorXd::Zero(n_var);
 
-    // Decision variables: [x_0..x_N, v_0..v_N, a_0..a_N-1]
-    Eigen::SparseMatrix<double> P(n_vars, n_vars);
-    Eigen::VectorXd q = Eigen::VectorXd::Zero(n_vars);
-
-    std::vector<Eigen::Triplet<double>> tripletList;
-
-    // Fill cost function
-    for (int i = 0; i < N; ++i) {
-        int v_idx = N + 1 + i;
-        int a_idx = 2 * (N + 1) + i;
-
-        // Quadratic terms
-        tripletList.emplace_back(v_idx, v_idx, gamma);
-        tripletList.emplace_back(a_idx, a_idx, epsilon);
-        tripletList.emplace_back(v_idx, a_idx, delta / 2.0);
-        tripletList.emplace_back(a_idx, v_idx, delta / 2.0);
-
-        // Linear term
-        q(v_idx) += beta;
+    std::vector<Eigen::Triplet<double>> hessian_triplets;
+    double w_acc = 10.0;
+    for (int i = 0; i < N - 1; ++i) {
+        int idx_i = N + i;
+        int idx_ip1 = N + i + 1;
+        hessian_triplets.push_back({idx_i, idx_i, w_acc});
+        hessian_triplets.push_back({idx_ip1, idx_ip1, w_acc});
+        hessian_triplets.push_back({idx_i, idx_ip1, -w_acc});
+        hessian_triplets.push_back({idx_ip1, idx_i, -w_acc});
     }
+    hessian.setFromTriplets(hessian_triplets.begin(), hessian_triplets.end());
 
-    P.setFromTriplets(tripletList.begin(), tripletList.end());
+    // Constraints: x0, v0, dynamics: x_{k+1} = x_k + v_k*dt
+    const int n_con = 2 * (N - 1) + 2; // dynamics + initial + final
+    Eigen::SparseMatrix<double> A(n_con, n_var);
+    Eigen::VectorXd lower_bound(n_con);
+    Eigen::VectorXd upper_bound(n_con);
 
-    // Constraints: A*x = b
-    Eigen::SparseMatrix<double> A(n_constraints, n_vars);
-    Eigen::VectorXd l = Eigen::VectorXd::Zero(n_constraints);
-    Eigen::VectorXd u = Eigen::VectorXd::Zero(n_constraints);
     std::vector<Eigen::Triplet<double>> A_triplets;
 
     int row = 0;
-
-    // Initial conditions
-    A_triplets.emplace_back(row, 0, 1.0); l(row) = x0; u(row) = x0; row++; // x0
-    A_triplets.emplace_back(row, N + 1, 1.0); l(row) = v0; u(row) = v0; row++; // v0
-
-    // Final conditions
-    A_triplets.emplace_back(row, N, 1.0); l(row) = xf; u(row) = xf; row++; // x_N
-    A_triplets.emplace_back(row, 2 * (N + 1) - 1, 1.0); l(row) = vf; u(row) = vf; row++; // v_N
-
     // Dynamics constraints
-    for (int i = 0; i < N; ++i) {
-        int xi = i, xi1 = i + 1;
-        int vi = N + 1 + i;
-        int ai = 2 * (N + 1) + i;
-
-        // x_{i+1} = x_i + v_i*dt + 0.5*a_i*dt^2
-        A_triplets.emplace_back(row, xi1, 1.0);
-        A_triplets.emplace_back(row, xi, -1.0);
-        A_triplets.emplace_back(row, vi, -dt);
-        A_triplets.emplace_back(row, ai, -0.5 * dt * dt);
-        l(row) = 0; u(row) = 0; row++;
-
-        // v_{i+1} = v_i + a_i*dt
-        int vi1 = vi + 1;
-        A_triplets.emplace_back(row, vi1, 1.0);
-        A_triplets.emplace_back(row, vi, -1.0);
-        A_triplets.emplace_back(row, ai, -dt);
-        l(row) = 0; u(row) = 0; row++;
+    for (int i = 0; i < N - 1; ++i) {
+        // x_{i+1} - x_i - dt * v_i = 0
+        A_triplets.push_back({row, i, -1.0});
+        A_triplets.push_back({row, i + 1, 1.0});
+        A_triplets.push_back({row, N + i, -dt});
+        lower_bound[row] = 0.0;
+        upper_bound[row] = 0.0;
+        ++row;
     }
+
+    // Initial constraints
+    A_triplets.push_back({row, 0, 1.0});        // x0
+    lower_bound[row] = x0;
+    upper_bound[row] = x0;
+    ++row;
+
+    A_triplets.push_back({row, N + 0, 1.0});    // v0
+    lower_bound[row] = v0;
+    upper_bound[row] = v0;
+    ++row;
+
+    // Final constraints
+    A_triplets.push_back({row, N - 1, 1.0});    // xN
+    lower_bound[row] = xf;
+    upper_bound[row] = xf;
+    ++row;
+
+    A_triplets.push_back({row, 2 * N - 1, 1.0}); // vN
+    lower_bound[row] = vf;
+    upper_bound[row] = vf;
+    ++row;
 
     A.setFromTriplets(A_triplets.begin(), A_triplets.end());
 
-    // Setup OSQP problem
-    csc* P_csc = osqp_sparse(P.rows(), P.cols(), P.nonZeros(), P.valuePtr(), P.innerIndexPtr(), P.outerIndexPtr());
-    csc* A_csc = osqp_sparse(A.rows(), A.cols(), A.nonZeros(), A.valuePtr(), A.innerIndexPtr(), A.outerIndexPtr());
+    // Setup solver
+    OsqpEigen::Solver solver;
+    solver.settings()->setVerbosity(false);
+    solver.settings()->setWarmStart(true);
+    solver.data()->setNumberOfVariables(n_var);
+    solver.data()->setNumberOfConstraints(n_con);
 
-    OSQPSettings* settings = (OSQPSettings*)c_malloc(sizeof(OSQPSettings));
-    OSQPData* data = (OSQPData*)c_malloc(sizeof(OSQPData));
+    if (!solver.data()->setHessianMatrix(hessian)) return false;
+    if (!solver.data()->setGradient(gradient)) return false;
+    if (!solver.data()->setLinearConstraintsMatrix(A)) return false;
+    if (!solver.data()->setLowerBound(lower_bound)) return false;
+    if (!solver.data()->setUpperBound(upper_bound)) return false;
 
-    osqp_set_default_settings(settings);
-    settings->verbose = false;
+    if (!solver.initSolver()) return false;
+    if (solver.solveProblem() != OsqpEigen::ErrorExitFlag::NoError) return false;
 
-    data->n = n_vars;
-    data->m = n_constraints;
-    data->P = P_csc;
-    data->q = q.data();
-    data->A = A_csc;
-    data->l = l.data();
-    data->u = u.data();
-
-    OSQPWorkspace* work = osqp_setup(data, settings);
-    osqp_solve(work);
-
-    bool success = work->info->status_val == OSQP_SOLVED;
-
-    if (success) {
-        x_out.resize(N + 1);
-        v_out.resize(N + 1);
-        for (int i = 0; i <= N; ++i) {
-            x_out[i] = work->solution->x[i];
-            v_out[i] = work->solution->x[N + 1 + i];
-        }
+    Eigen::VectorXd sol = solver.getSolution();
+    x_out.clear();
+    v_out.clear();
+    for (int i = 0; i < N; ++i) {
+        x_out.push_back(sol[i]);
+        v_out.push_back(sol[N + i]);
     }
 
-    osqp_cleanup(work);
-    c_free(settings);
-    c_free(data);
-    c_free(P_csc);
-    c_free(A_csc);
-
-    return success;
+    return true;
 }
 
 
