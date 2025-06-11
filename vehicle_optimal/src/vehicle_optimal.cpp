@@ -238,7 +238,16 @@ bool VehicleController::solveEcoDrivingOptimization(
     if (!solver.data()->setUpperBound(upper_bound)) return false;
 
     if (!solver.initSolver()) return false;
-    if (solver.solveProblem() != OsqpEigen::ErrorExitFlag::NoError) return false;
+    // time the solver
+    auto solve_start = std::chrono::high_resolution_clock::now();
+    auto result = solver.solveProblem();
+    auto solve_end = std::chrono::high_resolution_clock::now();
+    auto solve_duration = std::chrono::duration_cast<std::chrono::milliseconds>(solve_end - solve_start).count();
+    if (result != OsqpEigen::ErrorExitFlag::NoError) {
+    RCLCPP_ERROR(logger_, "OSQP solve failed with exit code: %d", static_cast<int>(result));
+    return false;
+    }
+    RCLCPP_INFO(logger_, "OSQP solve time: %ld ms", solve_duration);
 
     Eigen::VectorXd sol = solver.getSolution();
     x_out.clear();
