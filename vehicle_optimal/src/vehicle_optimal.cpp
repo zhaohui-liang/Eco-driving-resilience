@@ -69,7 +69,7 @@ void VehicleController::setTrafficLightCondition(int state, int time_to_next) {
 
     switch (state) {
         case 3: // red
-            time_to_next_phase_ = std::Smax(t,t_e_);
+            time_to_next_phase_ = std::max(t,t_e_);
             break;
 
         case 6: // green
