@@ -130,7 +130,7 @@ void VehicleController::generateTrajectory() {
     const double xf = traffic_light_position_;
     const double vf = expected_speed_;
     const double tf = time_to_next_phase_;
-    const double dt = 0.1;
+    const double dt = 0.01;
 
     std::vector<double> x_opt, v_opt;
 
@@ -163,7 +163,12 @@ bool VehicleController::solveEcoDrivingOptimization(
 {
     int N = static_cast<int>(tf / dt);
     const int n_var = 2 * N; // [x1...xN, v1...vN]
-
+    if (N < 2) {
+    RCLCPP_ERROR(logger_, "Insufficient horizon steps (N = %d). tf = %.2f, dt = %.2f", N, tf, dt);
+    return false;
+    }
+    RCLCPP_INFO(logger_, "solveEcoDrivingOptimization: x0=%.2f, v0=%.2f, xf=%.2f, vf=%.2f, tf=%.2f, dt=%.2f, N=%d",
+            x0, v0, xf, vf, tf, dt, N);
     // Hessian: penalize acceleration squared => differences in velocity
     Eigen::SparseMatrix<double> hessian(n_var, n_var);
     Eigen::VectorXd gradient = Eigen::VectorXd::Zero(n_var);
@@ -238,16 +243,11 @@ bool VehicleController::solveEcoDrivingOptimization(
     if (!solver.data()->setUpperBound(upper_bound)) return false;
 
     if (!solver.initSolver()) return false;
-    // time the solver
-    auto solve_start = std::chrono::high_resolution_clock::now();
     auto result = solver.solveProblem();
-    auto solve_end = std::chrono::high_resolution_clock::now();
-    auto solve_duration = std::chrono::duration_cast<std::chrono::milliseconds>(solve_end - solve_start).count();
     if (result != OsqpEigen::ErrorExitFlag::NoError) {
     RCLCPP_ERROR(logger_, "OSQP solve failed with exit code: %d", static_cast<int>(result));
     return false;
     }
-    RCLCPP_INFO(logger_, "OSQP solve time: %ld ms", solve_duration);
 
     Eigen::VectorXd sol = solver.getSolution();
     x_out.clear();
