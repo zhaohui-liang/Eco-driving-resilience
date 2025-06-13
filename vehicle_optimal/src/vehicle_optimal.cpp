@@ -6,8 +6,6 @@
 #include <filesystem>
 #include <chrono>
 
-using namespace casadi;
-
 VehicleController::VehicleController(rclcpp::Node* parent_node)
 : logger_(parent_node->get_logger()),
   last_position_(0.0),
@@ -136,7 +134,7 @@ void VehicleController::generateTrajectory() {
 
     std::vector<double> x_opt, v_opt;
 
-    bool success = solveEcoDrivingOptimization(x0, v0, xf, vf, tf, dt, x_opt, v_opt);
+    bool success = solveEcoDrivingOptimization(x0, v0, xf, vf, tf, vf+1.0, x_opt, v_opt);
 
     if (!success) {
         RCLCPP_ERROR(logger_, "Eco-driving optimization failed.");
@@ -173,10 +171,9 @@ void VehicleController::generateTrajectory() {
 }
 
 bool VehicleController::solveEcoDrivingOptimization(
-    double x0, double v0, double te, double tp, double vp, double vmax,
-    std::vector<double>& x_out, std::vector<double>& v_out) {
-    
-    (void)te;
+    double x0, double v0, double xf, double vf, double tp, double vmax,
+    std::vector<double>& x_out, std::vector<double>& v_out){
+    using namespace casadi;
     double dt = 0.1;
     int N = static_cast<int>(tp / dt) + 1;
 
@@ -205,7 +202,7 @@ bool VehicleController::solveEcoDrivingOptimization(
     // Initial and final conditions
     g.push_back(x(0) - x0);
     g.push_back(v(0) - v0);
-    g.push_back(x(N - 1) - traffic_light_position_);  // or xf
+    g.push_back(x(N - 1) - xf);  // or xf
     g.push_back(v(N - 1) - vp);
 
     // Dynamics constraints
