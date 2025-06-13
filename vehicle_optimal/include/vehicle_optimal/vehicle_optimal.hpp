@@ -5,8 +5,7 @@
 #include <memory>
 #include <string>
 #include <rclcpp/rclcpp.hpp>
-#include <OsqpEigen/OsqpEigen.h>
-#include <Eigen/Dense>
+#include <casadi/casadi.hpp>
 
 
 struct TrajectoryPoint {
@@ -31,11 +30,8 @@ private:
     void savePredictedTrajectoryToFile(const std::string& filename) const;
     void saveActualTrajectoryToFile(const std::string& filename) const;
     bool solveEcoDrivingOptimization(
-    double x0, double v0,
-    double xf, double vf,
-    double tf, double dt,
-    std::vector<double>& x_opt,
-    std::vector<double>& v_opt);
+    double x0, double v0, double te, double tp, double vp, double vmax,
+    std::vector<double>& x_out, std::vector<double>& v_out);
 
 
     rclcpp::Logger logger_;

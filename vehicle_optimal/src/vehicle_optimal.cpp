@@ -6,6 +6,8 @@
 #include <filesystem>
 #include <chrono>
 
+using namespace casadi;
+
 VehicleController::VehicleController(rclcpp::Node* parent_node)
 : logger_(parent_node->get_logger()),
   last_position_(0.0),
@@ -130,7 +132,7 @@ void VehicleController::generateTrajectory() {
     const double xf = traffic_light_position_;
     const double vf = expected_speed_;
     const double tf = time_to_next_phase_;
-    const double dt = 0.01;
+    const double dt = 0.1;
 
     std::vector<double> x_opt, v_opt;
 
@@ -142,10 +144,26 @@ void VehicleController::generateTrajectory() {
     }
 
     trajectory_.clear();
-    for (size_t i = 0; i < x_opt.size(); ++i) {
-        trajectory_.push_back({x_opt[i], v_opt[i], last_yaw_rate_});
-    }
+    const double interp_dt = 0.01;  // Interpolated output frequency (100 Hz)
+    for (size_t i = 0; i < x_opt.size() - 1; ++i) {
+        double t0 = i * dt;
+        double t1 = (i + 1) * dt;
 
+        double x0 = x_opt[i];
+        double x1 = x_opt[i + 1];
+
+        double v0 = v_opt[i];
+        double v1 = v_opt[i + 1];
+
+        for (double t = t0; t < t1; t += interp_dt) {
+            double alpha = (t - t0) / (t1 - t0);
+            double x_interp = (1 - alpha) * x0 + alpha * x1;
+            double v_interp = (1 - alpha) * v0 + alpha * v1;
+            trajectory_.push_back({x_interp, v_interp, last_yaw_rate_});
+        }
+    }
+    // Add the final point explicitly to avoid rounding issues
+    trajectory_.push_back({x_opt.back(), v_opt.back(), last_yaw_rate_});
     savePredictedTrajectoryToFile("predicted_trajectory.csv");
 
     auto end_time = high_resolution_clock::now();
@@ -155,106 +173,97 @@ void VehicleController::generateTrajectory() {
 }
 
 bool VehicleController::solveEcoDrivingOptimization(
-    double x0, double v0,
-    double xf, double vf,
-    double tf, double dt,
-    std::vector<double>& x_out,
-    std::vector<double>& v_out)
-{
-    int N = static_cast<int>(tf / dt);
-    const int n_var = 2 * N; // [x1...xN, v1...vN]
-    if (N < 2) {
-    RCLCPP_ERROR(logger_, "Insufficient horizon steps (N = %d). tf = %.2f, dt = %.2f", N, tf, dt);
-    return false;
+    double x0, double v0, double te, double tp, double vp, double vmax,
+    std::vector<double>& x_out, std::vector<double>& v_out) {
+    
+    (void)te;
+    double dt = 0.1;
+    int N = static_cast<int>(tp / dt) + 1;
+
+    SX X = SX::sym("X", 4, N);  // x, v, a, j
+
+    SX x = X(0, Slice());
+    SX v = X(1, Slice());
+    SX a = X(2, Slice());
+    SX j = X(3, Slice());
+
+    // Objective: fuel-related cost
+    SX J = 0;
+    double alpha = 0.15;
+    double beta = 0.0025;
+    double gamma = 0.00006;
+    double delta = 0.00035;
+    double epsilon = 0.0004;
+    for (int k = 0; k < N - 1; ++k) {
+        J += alpha + beta * v(k) + gamma * pow(v(k), 2)
+           + delta * v(k) * a(k) + epsilon * pow(a(k), 2);
     }
-    RCLCPP_INFO(logger_, "solveEcoDrivingOptimization: x0=%.2f, v0=%.2f, xf=%.2f, vf=%.2f, tf=%.2f, dt=%.2f, N=%d",
-            x0, v0, xf, vf, tf, dt, N);
-    // Hessian: penalize acceleration squared => differences in velocity
-    Eigen::SparseMatrix<double> hessian(n_var, n_var);
-    Eigen::VectorXd gradient = Eigen::VectorXd::Zero(n_var);
 
-    std::vector<Eigen::Triplet<double>> hessian_triplets;
-    double w_acc = 10.0;
-    for (int i = 0; i < N - 1; ++i) {
-        int idx_i = N + i;
-        int idx_ip1 = N + i + 1;
-        hessian_triplets.push_back({idx_i, idx_i, w_acc});
-        hessian_triplets.push_back({idx_ip1, idx_ip1, w_acc});
-        hessian_triplets.push_back({idx_i, idx_ip1, -w_acc});
-        hessian_triplets.push_back({idx_ip1, idx_i, -w_acc});
-    }
-    hessian.setFromTriplets(hessian_triplets.begin(), hessian_triplets.end());
+    // Constraints
+    std::vector<SX> g;
 
-    // Constraints: x0, v0, dynamics: x_{k+1} = x_k + v_k*dt
-    const int n_con = 2 * (N - 1) + 2; // dynamics + initial + final
-    Eigen::SparseMatrix<double> A(n_con, n_var);
-    Eigen::VectorXd lower_bound(n_con);
-    Eigen::VectorXd upper_bound(n_con);
+    // Initial and final conditions
+    g.push_back(x(0) - x0);
+    g.push_back(v(0) - v0);
+    g.push_back(x(N - 1) - traffic_light_position_);  // or xf
+    g.push_back(v(N - 1) - vp);
 
-    std::vector<Eigen::Triplet<double>> A_triplets;
-
-    int row = 0;
     // Dynamics constraints
-    for (int i = 0; i < N - 1; ++i) {
-        // x_{i+1} - x_i - dt * v_i = 0
-        A_triplets.push_back({row, i, -1.0});
-        A_triplets.push_back({row, i + 1, 1.0});
-        A_triplets.push_back({row, N + i, -dt});
-        lower_bound[row] = 0.0;
-        upper_bound[row] = 0.0;
-        ++row;
+    for (int k = 0; k < N - 1; ++k) {
+        g.push_back(x(k + 1) - (x(k) + v(k) * dt + 0.5 * a(k) * dt * dt));
+        g.push_back(v(k + 1) - (v(k) + a(k) * dt));
+        g.push_back(a(k + 1) - (a(k) + j(k) * dt));
     }
 
-    // Initial constraints
-    A_triplets.push_back({row, 0, 1.0});        // x0
-    lower_bound[row] = x0;
-    upper_bound[row] = x0;
-    ++row;
+    // Flatten all decision variables into a vector
+    SX Z = reshape(X, 4 * N, 1);
 
-    A_triplets.push_back({row, N + 0, 1.0});    // v0
-    lower_bound[row] = v0;
-    upper_bound[row] = v0;
-    ++row;
+    // Create NLP solver
+    Function solver = nlpsol("solver", "ipopt", {
+        {"x", Z},
+        {"f", J},
+        {"g", vertcat(g)}
+    }, {
+        {"ipopt.print_level", 0},
+        {"print_time", false}
+    });
 
-    // Final constraints
-    A_triplets.push_back({row, N - 1, 1.0});    // xN
-    lower_bound[row] = xf;
-    upper_bound[row] = xf;
-    ++row;
-
-    A_triplets.push_back({row, 2 * N - 1, 1.0}); // vN
-    lower_bound[row] = vf;
-    upper_bound[row] = vf;
-    ++row;
-
-    A.setFromTriplets(A_triplets.begin(), A_triplets.end());
-
-    // Setup solver
-    OsqpEigen::Solver solver;
-    solver.settings()->setVerbosity(false);
-    solver.settings()->setWarmStart(true);
-    solver.data()->setNumberOfVariables(n_var);
-    solver.data()->setNumberOfConstraints(n_con);
-
-    if (!solver.data()->setHessianMatrix(hessian)) return false;
-    if (!solver.data()->setGradient(gradient)) return false;
-    if (!solver.data()->setLinearConstraintsMatrix(A)) return false;
-    if (!solver.data()->setLowerBound(lower_bound)) return false;
-    if (!solver.data()->setUpperBound(upper_bound)) return false;
-
-    if (!solver.initSolver()) return false;
-    auto result = solver.solveProblem();
-    if (result != OsqpEigen::ErrorExitFlag::NoError) {
-    RCLCPP_ERROR(logger_, "OSQP solve failed with exit code: %d", static_cast<int>(result));
-    return false;
-    }
-
-    Eigen::VectorXd sol = solver.getSolution();
-    x_out.clear();
-    v_out.clear();
+    // Set bounds
+    DM lbz = DM::zeros(4 * N);
+    DM ubz = DM::zeros(4 * N);
     for (int i = 0; i < N; ++i) {
-        x_out.push_back(sol[i]);
-        v_out.push_back(sol[N + i]);
+        lbz(4 * i + 0) = -inf;         // x
+        ubz(4 * i + 0) = inf;
+        lbz(4 * i + 1) = 0.0;          // v
+        ubz(4 * i + 1) = vmax;
+        lbz(4 * i + 2) = -2.0;         // a
+        ubz(4 * i + 2) = 2.0;
+        lbz(4 * i + 3) = -0.5;         // j
+        ubz(4 * i + 3) = 0.5;
+    }
+
+    // Constraint bounds (all equality)
+    DM lbg = DM::zeros(g.size());
+    DM ubg = DM::zeros(g.size());
+
+    // Solve the NLP
+    std::map<std::string, DM> arg = {
+        {"x0", DM::zeros(4 * N)},
+        {"lbx", lbz},
+        {"ubx", ubz},
+        {"lbg", lbg},
+        {"ubg", ubg}
+    };
+
+    auto res = solver(arg);
+    DM sol = res.at("x");
+
+    // Extract x and v
+    x_out.resize(N);
+    v_out.resize(N);
+    for (int k = 0; k < N; ++k) {
+        x_out[k] = static_cast<double>(sol(4 * k + 0));
+        v_out[k] = static_cast<double>(sol(4 * k + 1));
     }
 
     return true;

@@ -11,8 +11,8 @@ find_package(rclcpp REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
 find_package(novatel_oem7_msgs REQUIRED)
-find_package(Eigen3 REQUIRED)
-find_package(OsqpEigen REQUIRED)
+find_package(casadi REQUIRED)
+
 
 # Include directories
 include_directories(
@@ -35,12 +35,12 @@ ament_target_dependencies(vehicle_optimal_node
   std_msgs
   geometry_msgs
   novatel_oem7_msgs
-  Eigen3
+  casadi
 )
 
 # Link libraries (direct linking)
 target_link_libraries(vehicle_optimal_node
-  OsqpEigen::OsqpEigen
+  casadi
 )
 
 # Install target executable
