@@ -203,7 +203,7 @@ bool VehicleController::solveEcoDrivingOptimization(
     g.push_back(x(0) - x0);
     g.push_back(v(0) - v0);
     g.push_back(x(N - 1) - xf);  // or xf
-    g.push_back(v(N - 1) - vp);
+    g.push_back(v(N - 1) - vf);
 
     // Dynamics constraints
     for (int k = 0; k < N - 1; ++k) {
