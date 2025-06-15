@@ -123,6 +123,30 @@ void VehicleController::setTrafficLightCondition(int state, int time_to_next) {
 
 void VehicleController::generateTrajectory() {
     using namespace std::chrono;
+    trajectory_.clear();
+    double d = traffic_light_position_ - last_position_;
+    if (d <= 0.0) {
+        if (last_speed_ <= 0.01) {
+            RCLCPP_WARN(logger_, "Vehicle already stopped. No deceleration needed.");
+            return;
+        }
+        RCLCPP_WARN(logger_, "Vehicle has reached or passed the traffic light. Decelerating to stop.");
+        double decel_duration = std::max(last_speed_ / 1.0, 1.0);  // at least 1 second, assume 1 m/s² decel
+        for (double t = 0.0; t <= decel_duration; t += 0.01) {
+            double spd = std::max(last_speed_ - t * 1.0, 0.0);  // linear deceleration
+            double pos = last_position_ + last_speed_ * t - 0.5 * 1.0 * t * t;
+            trajectory_.push_back({pos, spd, last_yaw_rate_});
+        }
+        constexpr double stopped_extension_time = 2.0;
+        for (double t = 0.0; t <= stopped_extension_time; t += 0.01) {
+            trajectory_.push_back({last_position_, 0.0, last_yaw_rate_});
+        }
+        savePredictedTrajectoryToFile("predicted_trajectory.csv");
+        RCLCPP_INFO(logger_, "Deceleration trajectory generated (d <= 0). Duration: %.2f s", decel_duration);
+        trajectory_count_++;
+        return;
+    }
+    
     auto start_time = high_resolution_clock::now();
 
     const double x0 = last_position_;
