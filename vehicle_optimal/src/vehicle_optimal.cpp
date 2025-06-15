@@ -31,24 +31,29 @@ VehicleController::VehicleController(rclcpp::Node* parent_node)
 }
 
 void VehicleController::updatePosition(double position) {
+    std::lock_guard<std::mutex> lock(controller_mutex_);
     last_position_ = position;
     actual_trajectory_.push_back({last_position_, last_speed_, last_yaw_rate_});
     saveActualTrajectoryToFile("actual_trajectory.csv");
 }
 
 void VehicleController::updateSpeed(double speed) {
+    std::lock_guard<std::mutex> lock(controller_mutex_);
     last_speed_ = speed;
 }
 
 void VehicleController::updateYawRate(double yaw_rate) {
+    std::lock_guard<std::mutex> lock(controller_mutex_);
     last_yaw_rate_ = yaw_rate;
 }
 
 double VehicleController::getLastSpeed() const {
+    std::lock_guard<std::mutex> lock(controller_mutex_);
     return last_speed_;
 }
 
 void VehicleController::setTrafficLightCondition(int state, int time_to_next) {
+    std::lock_guard<std::mutex> lock(controller_mutex_);
     traffic_light_state_ = state;
 
     double t  = time_to_next / 10.0; // Convert from tenths of seconds to seconds
@@ -123,6 +128,7 @@ void VehicleController::setTrafficLightCondition(int state, int time_to_next) {
 
 void VehicleController::generateTrajectory() {
     using namespace std::chrono;
+    std::lock_guard<std::mutex> lock(controller_mutex_);
     trajectory_.clear();
     double d = traffic_light_position_ - last_position_;
     if (d <= 0.0) {
@@ -293,6 +299,7 @@ bool VehicleController::solveEcoDrivingOptimization(
 
 
 const std::vector<TrajectoryPoint>& VehicleController::getTrajectory() const {
+    std::lock_guard<std::mutex> lock(controller_mutex_);
     return trajectory_;
 }
 

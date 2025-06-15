@@ -5,7 +5,8 @@
 
 SignalIO::SignalIO(rclcpp::Node* node, std::shared_ptr<VehicleController> controller)
 : node_(node), 
-  controller_(controller)
+  controller_(controller),
+  signal_updated_(false)
 {
     pos_sub_ = node_->create_subscription<novatel_oem7_msgs::msg::BESTGNSSPOS>(
         "/bynav/bestgnsspos", 10,
@@ -44,8 +45,9 @@ SignalIO::SignalIO(rclcpp::Node* node, std::shared_ptr<VehicleController> contro
 
 
 void SignalIO::generateTrajectoryCallback() {
-    if (!accelerating_to_target_) {
+    if (!accelerating_to_target_ && signal_updated_) {
         controller_->generateTrajectory();
+        signal_updated_ = false;
     }
 }
 
@@ -114,6 +116,7 @@ void SignalIO::updateSignalPhase() {
     }
 
     controller_->setTrafficLightCondition(signal_phase_, signal_time_left_);
+    signal_updated_ = true;
 }
 
 void SignalIO::publishControlLoop() {
@@ -131,7 +134,7 @@ void SignalIO::publishControlLoop() {
     } else {
         accelerating_to_target_ = false;
         // gps_distance_ = 0.0;  // start clean
-        controller_->generateTrajectory();
+        // controller_->generateTrajectory();
     }
     
     if (idx < trajectory.size()) {

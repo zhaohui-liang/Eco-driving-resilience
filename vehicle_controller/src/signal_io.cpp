@@ -131,7 +131,7 @@ void SignalIO::publishControlLoop() {
     } else {
         accelerating_to_target_ = false;
         // gps_distance_ = 0.0;  // start clean
-        controller_->generateTrajectory();
+        // controller_->generateTrajectory();
     }
     
     if (idx < trajectory.size()) {

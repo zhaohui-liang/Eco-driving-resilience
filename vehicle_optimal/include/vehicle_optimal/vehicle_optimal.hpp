@@ -32,6 +32,7 @@ private:
     bool solveEcoDrivingOptimization(
     double x0, double v0, double te, double tp, double vp, double vmax,
     std::vector<double>& x_out, std::vector<double>& v_out);
+    mutable std::mutex controller_mutex_;
 
 
     rclcpp::Logger logger_;
