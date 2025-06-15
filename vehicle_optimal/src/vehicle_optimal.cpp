@@ -275,10 +275,17 @@ bool VehicleController::solveEcoDrivingOptimization(
     // Constraint bounds (all equality)
     DM lbg = DM::zeros(g.size());
     DM ubg = DM::zeros(g.size());
-
+    DM X_init = DM::zeros(4, N);
+    for (int k = 0; k < N; ++k) {
+        double alpha = static_cast<double>(k) / (N - 1);
+        X_init(0, k) = x0 + alpha * (xf - x0);    // position
+        X_init(1, k) = v0 + alpha * (vf - v0);    // velocity
+        X_init(2, k) = 0.0;                       // acceleration
+        X_init(3, k) = 0.0;                       // jerk
+    }
     // Solve the NLP
     std::map<std::string, DM> arg = {
-        {"x0", DM::zeros(4 * N)},
+        {"x0", reshape(X_init, 4 * N, 1)},
         {"lbx", lbz},
         {"ubx", ubz},
         {"lbg", lbg},
