@@ -165,11 +165,14 @@ void VehicleController::generateTrajectory() {
     std::vector<double> x_opt, v_opt;
 
     bool success = solveEcoDrivingOptimization(x0, v0, xf, vf, tf, vf+1.0, x_opt, v_opt);
-
+    
     if (!success) {
         RCLCPP_ERROR(logger_, "Eco-driving optimization failed.");
         return;
     }
+    
+    RCLCPP_INFO(logger_, "Opt start: x = %.3f, v = %.3f", x_opt.front(), v_opt.front());
+    RCLCPP_INFO(logger_, "Opt end:   x = %.3f, v = %.3f", x_opt.back(), v_opt.back());
 
     trajectory_.clear();
     const double interp_dt = 0.01;  // Interpolated output frequency (100 Hz)
