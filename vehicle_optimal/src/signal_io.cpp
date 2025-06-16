@@ -46,7 +46,9 @@ SignalIO::SignalIO(rclcpp::Node* node, std::shared_ptr<VehicleController> contro
 
 void SignalIO::generateTrajectoryCallback() {
     if (!accelerating_to_target_ && signal_updated_) {
-        controller_->generateTrajectory();
+        std::thread([this]() {
+            controller_->generateTrajectory();
+        }).detach();
         signal_updated_ = false;
     }
 }
