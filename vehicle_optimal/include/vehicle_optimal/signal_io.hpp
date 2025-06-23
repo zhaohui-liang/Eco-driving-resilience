@@ -57,6 +57,7 @@ private:
   double green_duration_;
   double yellow_duration_;
   double signal_offset;
+  double distrubance_;
   bool signal_updated_;
 };
 

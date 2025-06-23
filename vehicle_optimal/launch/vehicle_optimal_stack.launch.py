@@ -21,7 +21,8 @@ def generate_launch_description():
         'red_duration': 34.8,
         'yellow_duration': 3.2,
         'green_duration': 55.1,
-        'signal_offset': 20.0  # shift phase forward by 20 seconds
+        'signal_offset': 20.0,  # shift phase forward by 20 seconds
+        'distrubance': 0.0
         }]
     )
 
