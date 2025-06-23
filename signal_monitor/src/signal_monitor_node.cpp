@@ -164,7 +164,7 @@ private:
 
         if (log_file_.is_open()) {
             log_file_ << now().seconds() << "," << lat0_ << "," << lon0_ << ","
-                      << speed_ << "," << signal_phase_ << "," << signal_time_left_ << "\n";
+                      << speed_ << "," << signal_phase_ << "," << signal_time_left_/10.0 << "\n";
         }
     }
 };
