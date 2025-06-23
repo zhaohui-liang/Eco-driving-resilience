@@ -24,7 +24,7 @@ SignalIO::SignalIO(rclcpp::Node* node, std::shared_ptr<VehicleController> contro
         std::bind(&SignalIO::publishControlLoop, this));
 
     trajectory_timer_ = node_->create_wall_timer(
-        std::chrono::seconds(2),
+        std::chrono::seconds(1),
         std::bind(&SignalIO::generateTrajectoryCallback, this));
 
     node_->declare_parameter("signal_offset", 0.0);
@@ -163,7 +163,7 @@ void SignalIO::publishControlLoop() {
     if (idx < trajectory.size()) {
         geometry_msgs::msg::TwistStamped cmd; 
         cmd.header.stamp = node_->now();
-        cmd.twist.linear.x = trajectory[idx].speed + 0.0001;
+        cmd.twist.linear.x = std::min(trajectory[idx].speed + 0.0001,12.0);
         cmd_pub_->publish(cmd);
         idx++;
     } else {
