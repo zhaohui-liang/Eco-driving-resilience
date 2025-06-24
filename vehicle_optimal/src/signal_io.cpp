@@ -38,8 +38,8 @@ SignalIO::SignalIO(rclcpp::Node* node, std::shared_ptr<VehicleController> contro
     node_->declare_parameter("entry_speed", 0.0);
     entry_speed_ = node->get_parameter("entry_speed").as_double();
 
-    node_->declare_parameter("distrubance", 0.0);
-    distrubance_ = node->get_parameter("distrubance").as_double();
+    node_->declare_parameter("disturbance", 0.0);
+    disturbance_ = node->get_parameter("disturbance").as_double();
 
     signal_timer_ = node_->create_wall_timer(
         std::chrono::milliseconds(100),
@@ -108,7 +108,7 @@ void SignalIO::updateSignalPhase() {
 
     double cycle = red_duration_ + yellow_duration_ + green_duration_;
     double cycle_time = fmod(t, cycle);
-    if (gps_distance_ < 160 - 10*distrubance_)
+    if (gps_distance_ < 140)
     {
         if (cycle_time < red_duration_) 
         {
@@ -127,13 +127,13 @@ void SignalIO::updateSignalPhase() {
         if (cycle_time < red_duration_) 
         {
         signal_phase_ = 3;  // Red
-        signal_time_left_ = static_cast<int>((red_duration_ - cycle_time) * 10) + distrubance_;
+        signal_time_left_ = static_cast<int>((red_duration_ - cycle_time) * 10) + disturbance_*10;
         } else if (cycle_time < red_duration_ + green_duration_) {
             signal_phase_ = 6;  // Green
-            signal_time_left_ = static_cast<int>((red_duration_ + green_duration_ - cycle_time) * 10) + distrubance_;
+            signal_time_left_ = static_cast<int>((red_duration_ + green_duration_ - cycle_time) * 10) + disturbance_*10;
         } else {
             signal_phase_ = 8;  // Yellow
-            signal_time_left_= static_cast<int>((cycle - cycle_time) * 10) + distrubance_;
+            signal_time_left_= static_cast<int>((cycle - cycle_time) * 10) + disturbance_*10;
         }
     }
     

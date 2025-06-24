@@ -19,13 +19,13 @@ public:
         declare_parameter("red_duration", 30.0);
         declare_parameter("yellow_duration", 5.0);
         declare_parameter("green_duration", 25.0);
-        declare_parameter("distrubance", 0.0);
+        declare_parameter("disturbance", 0.0);
 
         signal_offset_ = get_parameter("signal_offset").as_double();
         red_duration_ = get_parameter("red_duration").as_double();
         yellow_duration_ = get_parameter("yellow_duration").as_double();
         green_duration_ = get_parameter("green_duration").as_double();
-        distrubance_ = get_parameter("distrubance").as_double();
+        disturbance_ = get_parameter("disturbance").as_double();
 
         start_time_ = now() - rclcpp::Duration::from_seconds(signal_offset_);
 
@@ -61,7 +61,7 @@ private:
     rclcpp::TimerBase::SharedPtr signal_timer_;
 
     rclcpp::Time start_time_;
-    double signal_offset_, red_duration_, yellow_duration_, green_duration_, distrubance_;
+    double signal_offset_, red_duration_, yellow_duration_, green_duration_, disturbance_;
 
     int signal_phase_{3};        // 3: Red, 6: Green, 8: Yellow
     int signal_time_left_{0};    // in deciseconds
@@ -116,7 +116,7 @@ private:
         double cycle = red_duration_ + yellow_duration_ + green_duration_;
         double cycle_time = fmod(t, cycle);
 
-        if (gps_distance_ < 160 - 10 * distrubance_) {
+        if (gps_distance_ < 140) {
             if (cycle_time < red_duration_) {
                 signal_phase_ = 3;
                 signal_time_left_ = static_cast<int>((red_duration_ - cycle_time) * 10);
@@ -128,16 +128,16 @@ private:
                 signal_time_left_ = static_cast<int>((cycle - cycle_time) * 10);
             }
         } else {
-            int disturbance = static_cast<int>(distrubance_);
+            int disturbance = static_cast<int>(disturbance_);
             if (cycle_time < red_duration_) {
                 signal_phase_ = 3;
-                signal_time_left_ = static_cast<int>((red_duration_ - cycle_time) * 10) + disturbance;
+                signal_time_left_ = static_cast<int>((red_duration_ - cycle_time) * 10) + disturbance*10;
             } else if (cycle_time < red_duration_ + green_duration_) {
                 signal_phase_ = 6;
-                signal_time_left_ = static_cast<int>((red_duration_ + green_duration_ - cycle_time) * 10) + disturbance;
+                signal_time_left_ = static_cast<int>((red_duration_ + green_duration_ - cycle_time) * 10) + disturbance*10;
             } else {
                 signal_phase_ = 8;
-                signal_time_left_ = static_cast<int>((cycle - cycle_time) * 10) + disturbance;
+                signal_time_left_ = static_cast<int>((cycle - cycle_time) * 10) + disturbance*10;
             }
         }
 
