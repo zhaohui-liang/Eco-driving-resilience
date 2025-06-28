@@ -45,7 +45,7 @@ public:
 
         // Log file
         log_file_.open("signal_monitor_log.csv");
-        log_file_ << "time,lat,lon,speed,phase,phase_time_left\n";
+        log_file_ << "time,lat,lon,speed,phase,phase_time_left,gps_distance\n";
     }
 
     ~SignalMonitorNode()
@@ -163,8 +163,9 @@ private:
             << reset_code);
 
         if (log_file_.is_open()) {
-            log_file_ << now().seconds() << "," << lat0_ << "," << lon0_ << ","
-                      << speed_ << "," << signal_phase_ << "," << signal_time_left_/10.0 << "\n";
+            log_file_<< std::fixed << std::setprecision(6) << now().seconds() 
+            << "," << lat0_ << "," << lon0_ << ","
+            << speed_ << "," << signal_phase_ << "," << signal_time_left_/10.0 << gps_distance_ << "\n";
         }
     }
 };
